@@ -1,0 +1,29 @@
+@import "../../vars.less";
+
+:host {
+    background: @sidebarBg;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    > .upper-container {
+        flex: 1 1 auto;
+        padding: 10px;
+        min-height: 0;
+        overflow: auto;
+        ::ng-deep > * + * {
+            margin-top: 10px;
+        }
+    }
+    
+    > stv-view-settings {
+        flex: 0 0 auto;
+        height: @sidebarLowerPanelHeight;
+        min-height: @sidebarLowerPanelMinHeight;
+        max-height: @sidebarLowerPanelMaxHeight;
+        padding: 10px;
+    }
+}

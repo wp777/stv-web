@@ -1,0 +1,37 @@
+@import "../vars.less";
+
+.custom-checkbox {
+    cursor: pointer;
+    display: block;
+    padding: 5px 5px 5px 0;
+    
+    .checkbox-tick-wrapper {
+        display: inline-flex;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+        margin: 5px 10px 5px 0;
+        border-radius: 2px;
+        background: #fff;
+        color: @themeColor;
+    }
+    
+    .checkbox-tick {
+        transition: opacity 0.15s ease;
+    }
+    
+    input[type=checkbox] {
+        display: none;
+    }
+    
+    input[type=checkbox]:not(:checked) + .checkbox-tick-wrapper .checkbox-tick {
+        opacity: 0;
+    }
+    
+    &:hover {
+        input[type=checkbox]:not(:checked) + .checkbox-tick-wrapper .checkbox-tick {
+            opacity: 0.2;
+        }
+    }
+}

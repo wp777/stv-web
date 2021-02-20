@@ -1,0 +1,8 @@
+<div class="container">
+    <label>
+        <input type="file" (change)="onNativeInputValueChanged($event)" #nativeInput />
+        <i class="fa fa-file-upload icon"></i>
+        <code>{{displayedValue}}</code>
+        <i class="fa fa-times clear-value" *ngIf="hasValue" (click)="onClearValueClick($event)"></i>
+    </label>
+</div>

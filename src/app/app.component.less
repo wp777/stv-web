@@ -1,0 +1,22 @@
+@import "../vars.less";
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    
+    > stv-main {
+        flex: 1 1 auto;
+    }
+    
+    > stv-sidebar {
+        flex: 0 0 auto;
+        width: @sidebarWidth;
+        min-width: @sidebarMinWidth;
+        max-width: @sidebarMaxWidth;
+    }
+}

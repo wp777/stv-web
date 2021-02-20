@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="checkboxes">
+        <label class="custom-checkbox">
+            <input type="checkbox" [checked]="showStateLabels" (change)="onShowStateLabelsChanged()" />
+            <span class="checkbox-tick-wrapper">
+                <i class="fa fa-check checkbox-tick"></i>
+            </span>
+            <span class="checkbox-text">Show state labels</span>
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" [checked]="showActions" (change)="onShowActionsChanged()" />
+            <span class="checkbox-tick-wrapper">
+                <i class="fa fa-check checkbox-tick"></i>
+            </span>
+            <span class="checkbox-text">Show actions</span>
+        </label>
+    </div>
+    <div class="zoom-controls">
+        <button (click)="onZoomOutClick()" [disabled]="!canZoomOut"><i class="fa fa-minus"></i></button>
+        <button (click)="onZoomInClick()" [disabled]="!canZoomIn"><i class="fa fa-plus"></i></button>
+    </div>
+</div>

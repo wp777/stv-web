@@ -1,0 +1,43 @@
+@import "../../../vars.less";
+
+:host {
+    display: inline-block;
+}
+
+.container {
+    input[type="file"] {
+        display: none;
+    }
+    label {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        .icon {
+            margin-right: 10px;
+        }
+        code {
+            flex: 1 1 auto;
+            min-width: 0;
+            word-break: break-all;
+            padding-right: 5px;
+            line-height: 20px;
+        }
+        .clear-value {
+            flex: 0 0 auto;
+            line-height: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            
+            &:hover {
+                background: @buttonDefaultBg;
+                color: @buttonDefaultFg;
+            }
+        }
+    }
+}

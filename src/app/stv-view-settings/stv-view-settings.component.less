@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    .checkboxes {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+        margin-bottom: 10px;
+    }
+    
+    .zoom-controls {
+        flex: 0 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 10px;
+    }
+}

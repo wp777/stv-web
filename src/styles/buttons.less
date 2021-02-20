@@ -1,0 +1,76 @@
+@import "../vars.less";
+
+button,
+.btn {
+    border: 0;
+    outline: 0;
+    background: @buttonDefaultBg;
+    color: @buttonDefaultFg;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    text-decoration: none;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: bold;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    
+    &:hover {
+        background: darken(@buttonDefaultBg, 5%);
+    }
+    
+    &:active {
+        background: darken(@buttonDefaultBg, 10%);
+    }
+    
+    &.theme {
+        background: @themeColor;
+        color: @themeColorContrast;
+        
+        &:hover {
+            background: lighten(@themeColor, 5%);
+        }
+        
+        &:active {
+            background: darken(@themeColor, 5%);
+        }
+    }
+    
+    &:disabled,
+    &.disabled {
+        background: @buttonDisabledBg;
+        color: @buttonDisabledFg;
+        cursor: not-allowed;
+        
+        &:hover {
+            background: @buttonDisabledBg;
+        }
+        
+        &:active {
+            background: @buttonDisabledBg;
+        }
+    }
+    
+    i {
+        flex: 0 0 auto;
+        display: inline-block;
+        width: 19px;
+    }
+    
+    span {
+        flex: 0 1 auto;
+        min-width: 0;
+        display: inline-block;
+        margin: 0 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    i + span {
+        margin-left: 5px;
+    }
+}

@@ -1,0 +1,9 @@
+<div class="container" #container>
+    <div class="main-item" (click)="onMainItemClick($event)">
+        <div class="main-item-content"></div>
+        <span class="fas fa-caret-down dropdown-indicator"></span>
+    </div>
+    <div class="dropdown" (click)="onDropdownClick($event)">
+        <ng-content></ng-content>
+    </div>
+</div>

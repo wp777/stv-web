@@ -1,0 +1,46 @@
+@import "../../../vars.less";
+
+:host {
+    height: 100%;
+    width: 100%;
+}
+.splitter-handle {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    
+    i {
+        position: absolute;
+        pointer-events: none;
+        line-height: 6px;
+        color: @buttonDefaultBg;
+        &.for-vertical {
+            left: 0;
+            top: calc(50% - 7px);
+        }
+        &.for-horizontal {
+            left: calc(50% - 7px);
+            top: 0;
+        }
+    }
+}
+
+:host(.vertical) {
+    width: 6px;
+    .splitter-handle {
+        cursor: ew-resize;
+        i.for-horizontal {
+            display: none;
+        }
+    }
+}
+
+:host(.horizontal) {
+    height: 6px;
+    .splitter-handle {
+        cursor: ns-resize;
+        i.for-vertical {
+            display: none;
+        }
+    }
+}
