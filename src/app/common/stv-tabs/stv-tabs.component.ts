@@ -64,11 +64,29 @@ export class StvTabsComponent implements OnInit, AfterViewInit {
         this.selectNthTab(0);
     }
     
+    selectTabByCallback(callback: (tabHeader: HTMLElement, tabContent: HTMLElement, index: number) => boolean): void {
+        const headerElements = this.header?.childNodes as NodeListOf<HTMLElement> | undefined;
+        const contentElements = this.content?.childNodes as NodeListOf<HTMLElement> | undefined;
+        if (!headerElements || !contentElements) {
+            return;
+        }
+        let lastFoundIndex: number = -1;
+        headerElements.forEach((header, index) => {
+            const content = contentElements.item(index);
+            if (callback(header, content, index)) {
+                lastFoundIndex = index;
+            }
+        });
+        if (lastFoundIndex >= 0) {
+            this.selectNthTab(lastFoundIndex);
+        }
+    }
+    
     selectNthTab(tabIndex: number): void {
         const selectedHeader = this.selectedHeader;
         const selectedContent = this.selectedContent;
-        const header = this.header?.children[tabIndex] as HTMLElement | undefined;
-        const content = this.content?.children[tabIndex] as HTMLElement | undefined    ;
+        const header = this.header?.childNodes[tabIndex] as HTMLElement | undefined;
+        const content = this.content?.childNodes[tabIndex] as HTMLElement | undefined;
         if (!header || !content || (header == selectedHeader || content == selectedContent)) {
             return;
         }

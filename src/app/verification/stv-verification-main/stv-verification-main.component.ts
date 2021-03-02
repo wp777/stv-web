@@ -49,10 +49,11 @@ export class StvVerificationMainComponent implements OnInit, OnDestroy, AfterVie
             const hasReducedModel = model.reducedModel !== null;
             const localModelNames = model.localModelNames || [];
             this.setTabs([
-                ...(hasGlobalModel ? [{ header: "Model", id: "global" }] : []),
-                ...(hasReducedModel ? [{ header: "Reduced", id: "reduced" }] : []),
                 ...localModelNames.map((localModelName, index) => ( { header: localModelName, id: `local-${index}` })),
+                ...(hasReducedModel ? [{ header: "Reduced", id: "reduced" }] : []),
+                ...(hasGlobalModel ? [{ header: "Model", id: "global" }] : []),
             ]);
+            this.activateTab("global");
         }
     }
     
@@ -157,6 +158,14 @@ export class StvVerificationMainComponent implements OnInit, OnDestroy, AfterVie
             content.classList.add("not-rendered");
             tabsComponent.addTab(header, content);
         }
+    }
+    
+    activateTab(tabId: string): void {
+        const tabsComponent = this.tabs as unknown as StvTabsComponent;
+        tabsComponent.selectTabByCallback(tabHeader => {
+            const _tabId = tabHeader.dataset["tabId"];
+            return _tabId === tabId;
+        });
     }
     
     private getVerificationState(): state.actions.Verification {
