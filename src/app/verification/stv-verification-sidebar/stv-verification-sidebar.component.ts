@@ -87,17 +87,17 @@ export class StvVerificationParametersComponent implements OnInit, OnDestroy {
     }
     
     onLowerApproximationClick(): void {
-        // @todo
+        // @todo WP
         console.log(this.appState);
     }
     
     onUpperApproximationClick(): void {
-        // @todo
+        // @todo WP
         console.log(this.appState);
     }
     
     onDominoDfsClick(): void {
-        // @todo
+        // @todo WP
         console.log(this.appState);
     }
     

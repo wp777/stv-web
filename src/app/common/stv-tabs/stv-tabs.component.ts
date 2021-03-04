@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Directive, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, Directive, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewContainerRef } from "@angular/core";
 
 @Directive({selector: '[slot=header]'})
 export class Pane {
@@ -14,18 +14,18 @@ export class StvTabsComponent implements OnInit, AfterViewInit {
     @Output()
     tabActivated = new EventEmitter<{ tabHeader: HTMLElement, tabContent: HTMLElement }>();
     
-    @ViewChild("header")
-    headerRef?: ElementRef;
+    @ViewChild("header", { read: ViewContainerRef })
+    headerRef?: ViewContainerRef;
     
-    @ViewChild("content")
-    contentRef?: ElementRef;
+    @ViewChild("content", { read: ViewContainerRef })
+    contentRef?: ViewContainerRef;
     
     get header(): HTMLDivElement | null | undefined {
-        return this.headerRef?.nativeElement;
+        return this.headerRef?.element.nativeElement;
     }
     
     get content(): HTMLDivElement | null | undefined {
-        return this.contentRef?.nativeElement;
+        return this.contentRef?.element.nativeElement;
     }
     
     get selectedHeader(): HTMLDivElement | null | undefined {
@@ -101,12 +101,14 @@ export class StvTabsComponent implements OnInit, AfterViewInit {
         this.emitTabActivated(header, content);
     }
     
-    addTab(header: HTMLDivElement, content: HTMLDivElement): void {
+    addTab(header: HTMLDivElement, content: HTMLDivElement, allowTabActivation: boolean = false): void {
         header.setAttribute("slot", "header");
         content.setAttribute("slot", "content");
         this.header?.appendChild(header);
         this.content?.appendChild(content);
-        this.ensureAnyTabActive();
+        if (allowTabActivation) {
+            this.ensureAnyTabActive();
+        }
     }
     
     clearTabs(): void {

@@ -19,7 +19,7 @@ type Response = SuccessResponse | ErrorResponse;
 })
 export class ComputeService {
     
-    constructor(private appState: state.AppState) {}
+    constructor() {}
     
     async generateModel<TModel>(modelParameters: Types.models.parameters.SomeParameters, reduced: boolean): Promise<TModel> {
         const action: Types.actions.ModelGeneration = {
