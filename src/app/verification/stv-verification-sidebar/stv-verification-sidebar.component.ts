@@ -64,6 +64,8 @@ export class StvVerificationParametersComponent implements OnInit, OnDestroy {
         const modelParameters = model.parameters;
         const result = await this.computeService.generateModel<any>(modelParameters.getPlainModelParameters(), false);
         
+
+        // todo: reset toggles (e.g. action labels, etc.)
         if (result.nodes && result.links) {
             model.globalModel = result;
         }
