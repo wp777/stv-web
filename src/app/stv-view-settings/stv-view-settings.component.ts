@@ -12,8 +12,6 @@ export class StvViewSettingsComponent implements OnInit, OnDestroy {
     
     showActions: boolean;
     showStateLabels: boolean;
-    canZoomIn: boolean;
-    canZoomOut: boolean;
     
     private viewSettingsSubscriptions: Subscription[] = [];
     
@@ -21,14 +19,10 @@ export class StvViewSettingsComponent implements OnInit, OnDestroy {
         const viewSettings = appState.viewSettings;
         this.showActions = viewSettings.showActions;
         this.showStateLabels = viewSettings.showStateLabels;
-        this.canZoomIn = viewSettings.canZoomIn;
-        this.canZoomOut = viewSettings.canZoomOut;
         this.viewSettingsSubscriptions.push(viewSettings.showActions$.subscribe(() => this.showActions = viewSettings.showActions));
         this.viewSettingsSubscriptions.push(viewSettings.showStateLabels$.subscribe(() => this.showStateLabels = viewSettings.showStateLabels));
-        // this.viewSettingsSubscriptions.push(viewSettings.canZoomIn$.subscribe(() => this.canZoomIn = viewSettings.canZoomIn));
-        // this.viewSettingsSubscriptions.push(viewSettings.canZoomOut$.subscribe(() => this.canZoomOut = viewSettings.canZoomOut));
     }
-
+    
     ngOnInit(): void {}
     
     ngOnDestroy(): void {
@@ -48,15 +42,15 @@ export class StvViewSettingsComponent implements OnInit, OnDestroy {
     }
     
     onZoomInClick(): void {
-        this.graphService.updateZoom(1.2);
+        this.graphService.setZoom(1.2);
     }
     
     onZoomOutClick(): void {
-        this.graphService.updateZoom(1/1.2);
+        this.graphService.setZoom(1 / 1.2);
     }
-
+    
     onZoomToFitClick(): void{
-        this.graphService.zoomToFit()
+        this.graphService.zoomToFit();
     }
     
 }

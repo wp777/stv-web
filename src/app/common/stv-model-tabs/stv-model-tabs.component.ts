@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnInit, ViewChild } from "@angular/core";
 import * as state from "src/app/state";
-import { StvTabsComponent } from "../stv-tabs/stv-tabs.component";
-
 import { StvGraphComponent } from "../stv-graph/stv-graph.component";
 import { StvGraphService } from "../stv-graph/stv-graph.service"
+import { StvTabsComponent } from "../stv-tabs/stv-tabs.component";
 
 
 @Component({
@@ -12,32 +11,32 @@ import { StvGraphService } from "../stv-graph/stv-graph.service"
     styleUrls: ["./stv-model-tabs.component.less"],
 })
 export class StvModelTabsComponent implements OnInit, AfterViewInit {
-
+    
     static readonly GLOBAL_MODEL_TAB_ID: string = "global";
     static readonly REDUCED_MODEL_TAB_ID: string = "reduced";
     static readonly LOCAL_MODEL_TAB_ID_PREFIX: string = "local-";
-
+    
     @ViewChild("tabs")
     tabsRef?: ElementRef<StvTabsComponent>;
-
+    
     get tabs(): StvTabsComponent {
         return this.tabsRef! as unknown as StvTabsComponent;
     }
-
+    
     renderedTabs: { [id: string]: string } = {};
-
+    
     private model: state.models.SomeModel | null = null;
-
-    // todo: fix graphService instance reference to be binded with component
+    
+    // @todo fix graphService instance reference to be binded with component
     constructor(private componentFactoryResolver: ComponentFactoryResolver, private graphService: StvGraphService) {
     }
-
+    
     ngOnInit(): void { }
-
+    
     ngAfterViewInit(): void {
         this.resetTabs();
     }
-
+    
     setModel(model: state.models.SomeModel): void {
         this.model = model;
         const hasGlobalModel = model.globalModel !== null;
@@ -76,7 +75,7 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
             }
         }
     }
-
+    
     onTabActivated(event: { tabHeader: HTMLElement, tabContent: HTMLElement }): void {
         const tabId = event.tabHeader.dataset["tabId"];
         const model = this.model;
@@ -97,27 +96,25 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
             }
         }
     }
-
-    // todo: temporary fix
+    
+    // @todo temporary fix
     renderGraph(graph: state.models.graph.Graph, graphContainer: HTMLElement): void {
         const graphComponentFactory = this.componentFactoryResolver.resolveComponentFactory(StvGraphComponent);
         const graphComponentRef = this.tabs.contentRef!.createComponent(graphComponentFactory);
-        // graphComponentRef.instance.render(graph);
-
+        
         this.graphService.render(graph, graphComponentRef.location.nativeElement.children[0] as HTMLDivElement);
-
+        
         graphContainer.append(graphComponentRef.location.nativeElement);
         graphContainer.classList.remove("not-rendered");
     }
-
+    
     resetTabs(): void {
         this.renderedTabs = {};
         this.tabs.clearTabs();
     }
-
-
-    // todo: tab content should match stv-graph-component.html?
-    // multiple instances of .graph-container
+    
+    // @todo tab content should match stv-graph-component.html?
+    // @todo multiple instances of .graph-container
     addTab(tabId: string, tabHeader: string): boolean {
         if (tabId in this.renderedTabs) {
             return false;
@@ -132,7 +129,7 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
         this.tabs.addTab(header, content);
         return true;
     }
-
+    
     activateTab(tabId: string): void {
         const tabsComponent = this.tabsRef as unknown as StvTabsComponent;
         tabsComponent.selectTabByCallback(tabHeader => {
@@ -140,5 +137,5 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
             return _tabId === tabId;
         });
     }
-
+    
 }
