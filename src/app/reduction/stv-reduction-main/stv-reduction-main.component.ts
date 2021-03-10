@@ -21,7 +21,9 @@ export class StvReductionMainComponent implements OnInit, OnDestroy, AfterViewIn
     private appStateSubscription: Subscription;
     
     constructor(private appState: state.AppState) {
-        this.appStateSubscription = appState.state$.pipe(debounce(() => interval(10))).subscribe(() => this.onAppStateChanged());
+        this.appStateSubscription = appState.state$
+            .pipe(debounce(() => interval(10)))
+            .subscribe(() => this.onAppStateChanged());
     }
 
     ngOnInit(): void {}
