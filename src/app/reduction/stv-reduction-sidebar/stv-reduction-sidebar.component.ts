@@ -4,7 +4,8 @@ import * as Types from "stv-types";
 import * as state from "../../state";
 import { ComputeService } from "src/app/compute.service";
 import { StvSelectComponent } from "src/app/common/stv-select/stv-select.component";
-import { Subscription } from "rxjs";
+import { Subscription, interval } from "rxjs";
+import { debounce } from "rxjs/operators";
 import { InputFileReader } from "src/app/utils";
 
 @Component({
@@ -57,9 +58,9 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
                 }
             }
         });
-        this.appStateSubscription = appState.state$.subscribe(() => {
-            this.onAppStateChanged();
-        });
+        this.appStateSubscription = appState.state$
+            .pipe(debounce(() => interval(10)))
+            .subscribe(() => this.onAppStateChanged());
     }
 
     ngOnInit(): void {}
