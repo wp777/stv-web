@@ -82,30 +82,7 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     }
     
     async generateModel(reduced: boolean): Promise<void> {
-        const model = this.getReductionModel();
-        const modelParameters = model.parameters;
-        const result = await this.computeService.generateModel<any>(modelParameters.getPlainModelParameters(), reduced);
-        
-        if (result.nodes && result.links) {
-            model.globalModel = result;
-        }
-        else {
-            if (result.formula) {
-                model.formula = result.formula;
-            }
-            if (result.globalModel && !reduced) {
-                model.globalModel = JSON.parse(result.globalModel);
-            }
-            if (result.reducedModel) {
-                model.reducedModel = JSON.parse(result.reducedModel);
-            }
-            if (result.localModels) {
-                model.localModels = result.localModels.map((localModelStr: string) => JSON.parse(localModelStr));
-            }
-            if (result.localModelNames) {
-                model.localModelNames = result.localModelNames;
-            }
-        }
+        await this.computeService.generateModel(this.getReductionModel(), reduced);
     }
     
     onLowerApproximationGlobalClick(): void {
@@ -151,6 +128,7 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     }
     
     onAppStateChanged(): void {
+        console.log("RED")
         this.canGenerateGlobal = this.getReductionState().canGenerateGlobalModel();
         this.canGenerateReduced = this.getReductionState().canGenerateReducedModel();
         this.canVerifyGlobal = this.getReductionState().canVerifyGlobalModel();

@@ -21,13 +21,34 @@ export class ComputeService {
     
     constructor() {}
     
-    async generateModel<TModel>(modelParameters: Types.models.parameters.SomeParameters, reduced: boolean): Promise<TModel> {
+    async generateModel(model: state.models.SomeModel, reduced: boolean): Promise<void> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
         const action: Types.actions.ModelGeneration = {
             type: "modelGeneration",
             modelParameters: modelParameters,
             reduced: reduced,
         };
-        return this.requestCompute(action);
+        const result = await this.requestCompute<Types.actions.ModelGeneration, any>(action);
+        if (result.nodes && result.links) {
+            model.globalModel = result;
+        }
+        else {
+            if (result.formula) {
+                model.formula = result.formula;
+            }
+            if (result.globalModel && !reduced) {
+                model.globalModel = JSON.parse(result.globalModel);
+            }
+            if (result.reducedModel) {
+                model.reducedModel = JSON.parse(result.reducedModel);
+            }
+            if (result.localModels) {
+                model.localModels = result.localModels.map((localModelStr: string) => JSON.parse(localModelStr));
+            }
+            if (result.localModelNames) {
+                model.localModelNames = result.localModelNames;
+            }
+        }
     }
     
     async requestCompute<TRequest extends Types.actions.Action, TResponse>(requestObject: TRequest): Promise<TResponse> {

@@ -60,31 +60,11 @@ export class StvVerificationParametersComponent implements OnInit, OnDestroy {
     }
     
     async onGenerateClick(): Promise<void> {
-        const model = this.getVerificationState().model;
-        const modelParameters = model.parameters;
-        const result = await this.computeService.generateModel<any>(modelParameters.getPlainModelParameters(), false);
-        
-        // @todo reset toggles (e.g. action labels, etc.)
-        if (result.nodes && result.links) {
-            model.globalModel = result;
-        }
-        else {
-            if (result.formula) {
-                model.formula = result.formula;
-            }
-            if (result.globalModel) {
-                model.globalModel = JSON.parse(result.globalModel);
-            }
-            if (result.reducedModel) {
-                model.reducedModel = JSON.parse(result.reducedModel);
-            }
-            if (result.localModels) {
-                model.localModels = result.localModels.map((localModelStr: string) => JSON.parse(localModelStr));
-            }
-            if (result.localModelNames) {
-                model.localModelNames = result.localModelNames;
-            }
-        }
+        await this.generateModel(false);
+    }
+    
+    async generateModel(reduced: boolean): Promise<void> {
+        await this.computeService.generateModel(this.getVerificationModel(), reduced);
     }
     
     onLowerApproximationClick(): void {
@@ -116,6 +96,10 @@ export class StvVerificationParametersComponent implements OnInit, OnDestroy {
     
     private getVerificationState(): state.actions.Verification {
         return this.appState.action as state.actions.Verification;
+    }
+    
+    private getVerificationModel(): state.models.SomeModel {
+        return this.getVerificationState().model as state.models.SomeModel;
     }
     
 }
