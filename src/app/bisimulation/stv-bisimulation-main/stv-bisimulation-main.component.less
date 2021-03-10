@@ -1,0 +1,26 @@
+@import "../../../vars.less";
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.graphs {
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    
+    > .graph {
+        flex: 1 1 50%;
+        
+        /deep/ stv-graph {
+            height: 100%;
+        }
+    }
+    
+    >.separator {
+        flex: 0 0 6px;
+        background: @secondaryPanelBg;
+    }
+}

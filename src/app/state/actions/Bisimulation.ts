@@ -26,9 +26,12 @@ export class Bisimulation extends Action<BisimulationObservableProperties> {
             && this.model2.parameters.areModelParametersValid();
     }
     
-    canVerifyModel(): boolean {
-        return this.model1.globalModel !== null
-            && this.model2.globalModel !== null;
+    canVerifyModel1(): boolean {
+        return this.model1.globalModel !== null;
+    }
+    
+    canVerifyModel2(): boolean {
+        return this.model2.globalModel !== null;
     }
     
     canCheckBisimulation(): boolean {

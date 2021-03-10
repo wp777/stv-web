@@ -1,1 +1,40 @@
-<p>stv-bisimulation-sidebar coming soon</p>
+<div class="model-parameters-container">
+    <h4>Model 1 file</h4>
+    <div class="form">
+        <stv-file-input id="model1-file" class="full-width-input" (fileListChanged)="onModel1FileListChanged($event)"></stv-file-input>
+    </div>
+    <h4>Model 2 file</h4>
+    <div class="form">
+        <stv-file-input id="model2-file" class="full-width-input" (fileListChanged)="onModel2FileListChanged($event)"></stv-file-input>
+    </div>
+</div>
+
+<div class="actions-container">
+    <div class="row">
+        <button class="theme col-12" (click)="onGenerateClick()" [disabled]="!canGenerate"><span>Generate</span></button>
+    </div>
+</div>
+
+<div class="model-parameters-container">
+    <h4>Bisimulation specification file</h4>
+    <div class="form">
+        <stv-file-input id="bisimulation-specification-file" class="full-width-input" (fileListChanged)="onBisimulationSpecificationFileListChanged($event)"></stv-file-input>
+    </div>
+</div>
+
+<div class="actions-container">
+    <div class="row">
+        <button class="theme col-12" (click)="onCheckClick()" [disabled]="!canCheck"><span>Check</span></button>
+    </div>
+    
+    <h4>Coalition A</h4>
+    <code class="coalition-A">{{coalitionA || "(unknown)"}}</code>
+</div>
+
+<div class="actions-container">
+    <h4>Verification</h4>
+    <div class="row">
+        <button class="theme col-6" (click)="onVerifyLeftClick()" [disabled]="!canVerifyLeft"><span>Verify left</span></button>
+        <button class="theme col-6" (click)="onVerifyRightClick()" [disabled]="!canVerifyRight"><span>Verify right</span></button>
+    </div>
+</div>
