@@ -10,7 +10,7 @@ export class StvGraphService {
     private cy: cytoscape.Core | null = null;
     private userZoomEnabled: boolean = true;
     private zoomAnimationSpeed: number = 200;
-    
+
     constructor() {}
     
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
@@ -40,13 +40,20 @@ export class StvGraphService {
             {
                 selector: ".withStateLabels",
                 style: {
-                    label: (el: cytoscape.EdgeSingular) => JSON.stringify(el.data("T")),
+                    label: (el: cytoscape.EdgeSingular) => JSON.stringify(el.data("T")).split(',').join(',\n'),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                    "text-wrap": "wrap",
+                    "text-valign": "center",
+                    "text-halign": "right",
                 },
             },
             {
                 selector: ".withActionLabels",
                 style: {
                     label: "data(T)",
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
                 },
             },
             {
@@ -54,7 +61,18 @@ export class StvGraphService {
                 style: {
                     "background-color": "blue",
                 },
-            },
+            },{
+                selector: "edge",
+                style: {
+                    "width": "3px",
+                    "curve-style":"bezier",
+                    "target-arrow-shape":"triangle",
+                }
+            },{
+                selector:"node",
+                style: {
+                }
+            }
         ];
         
         // @todo add graph loading mask
@@ -72,6 +90,7 @@ export class StvGraphService {
             },
             style: styleArr,
         });
+
         
         console.log(this.cy);
     }
