@@ -12,6 +12,11 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 In this mode **stv-server** is available (it has to be started separately). Use `ng build --watch` to enable automatic rebuild on source code changes.
 
+```
+ng build --watch
+cd ..\stv-server\ ; npm run dev
+```
+
 ## Coding guidelines
 1. Don't commit code that does not compile.
 1. Commits must contain a short message that describes changes.

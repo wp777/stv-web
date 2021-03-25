@@ -19,8 +19,12 @@ export class StvViewSettingsComponent implements OnInit, OnDestroy {
         const viewSettings = appState.viewSettings;
         this.showActions = viewSettings.showActions;
         this.showStateLabels = viewSettings.showStateLabels;
-        this.viewSettingsSubscriptions.push(viewSettings.showActions$.subscribe(() => this.showActions = viewSettings.showActions));
-        this.viewSettingsSubscriptions.push(viewSettings.showStateLabels$.subscribe(() => this.showStateLabels = viewSettings.showStateLabels));
+        this.viewSettingsSubscriptions.push(
+            viewSettings.showActions$.subscribe(() => this.showActions = viewSettings.showActions)
+        );
+        this.viewSettingsSubscriptions.push(
+            viewSettings.showStateLabels$.subscribe(() => this.showStateLabels = viewSettings.showStateLabels)
+        );
     }
     
     ngOnInit(): void {}

@@ -62,6 +62,7 @@ export class StvVerificationParametersComponent implements OnInit, OnDestroy {
     
     async onGenerateClick(): Promise<void> {
         await this.generateModel(false);
+        this.appState.viewSettings.reset();
     }
     
     async generateModel(reduced: boolean): Promise<void> {

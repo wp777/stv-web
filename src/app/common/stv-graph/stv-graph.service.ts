@@ -1,22 +1,28 @@
 import { Injectable } from "@angular/core";
 import * as state from "src/app/state";
 import * as cytoscape from "cytoscape";
+import { WrappedNodeExpr } from "@angular/compiler";
+import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
 
 @Injectable({
     providedIn: "root",
 })
 export class StvGraphService {
-    
+
     private cy: cytoscape.Core | null = null;
     private userZoomEnabled: boolean = true;
     private zoomAnimationSpeed: number = 200;
 
-    constructor() {}
-    
+    public stateLabels: Array<String> = []; // all keys
+    public actionLabels: Array<String> = []; // all keys
+
+
+    constructor() { }
+
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
         // @todo YK (advanced graph rendering) + (use three consts below while initializing graph or call three methods this.update...() after graph initialization)
         console.log(graph);
-        
+
         const nodes: cytoscape.ElementDefinition[] = graph.nodes.map(node => ({
             data: {
                 id: `n_${node.id}`,
@@ -25,7 +31,9 @@ export class StvGraphService {
             },
             classes: node.bgn ? "bgn" : "",
         }));
-        
+
+        this.stateLabels = [...new Set([nodes.map(x => Object.keys(x.data.T))].flat(2))];
+
         const edges: cytoscape.ElementDefinition[] = graph.links.map(link => ({
             data: {
                 id: `e_${link.id}`,
@@ -34,13 +42,15 @@ export class StvGraphService {
                 T: link.T,
             },
         }));
-        
+
+        this.actionLabels = [...new Set([edges.map(x => x.data.T)].flat(2))];
+
         // @todo beautify labels
         const styleArr: cytoscape.Stylesheet[] = [
             {
                 selector: ".withStateLabels",
                 style: {
-                    label: (el: cytoscape.EdgeSingular) => JSON.stringify(el.data("T")).split(',').join(',\n'),
+                    label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
                     "text-outline-color": "white",
                     "text-outline-width": "1px",
                     "text-wrap": "wrap",
@@ -61,19 +71,21 @@ export class StvGraphService {
                 style: {
                     "background-color": "blue",
                 },
-            },{
+            }, {
                 selector: "edge",
                 style: {
                     "width": "3px",
-                    "curve-style":"bezier",
-                    "target-arrow-shape":"triangle",
+                    "curve-style": "bezier",
+                    "target-arrow-shape": "triangle",
                 }
-            },{
-                selector:"node",
+            }, {
+                selector: "node",
                 style: {
                 }
             }
         ];
+
+        // @todo YK add cytoscape-node-html-label extention for better label render performance
         
         // @todo add graph loading mask
         this.cy = cytoscape({
@@ -87,27 +99,34 @@ export class StvGraphService {
                 animate: false,
                 fit: true,
                 padding: 30,
+                nodeDimensionsIncludeLabels:true
             },
             style: styleArr,
         });
 
-        
+        // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
+
         console.log(this.cy);
     }
-    
+
+    private stateLabelsToString(el: cytoscape.EdgeSingular) {
+        // @todo YK add filter to only show selected keys
+        return JSON.stringify(el.data("T")).replace(/\"/g, "").split(',').join(',\n ');
+    }
+
     toggleStateLabels(): void {
         this.cy?.nodes().toggleClass("withStateLabels");
     }
-    
+
     toggleActionLabels(): void {
         this.cy?.edges().toggleClass("withActionLabels");
     }
-    
+
     setZoom(step: number, withAnimation: boolean = true): void {
         if (!this.cy) {
             return;
         }
-        
+
         let val = this.cy.zoom() * step;
         if (withAnimation) {
             this.cy.userZoomingEnabled(false);
@@ -128,12 +147,12 @@ export class StvGraphService {
             this.cy.zoom(val);
         }
     }
-    
+
     zoomToFit(withAnimation: boolean = true) {
         if (!this.cy) {
             return;
         }
-        
+
         if (withAnimation) {
             this.cy.userZoomingEnabled(false);
             this.cy.stop().animate(
@@ -155,5 +174,5 @@ export class StvGraphService {
             this.cy.fit();
         }
     }
-    
+
 }
