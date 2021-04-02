@@ -7,6 +7,7 @@ import { StvModelTabsComponent } from "./stv-model-tabs/stv-model-tabs.component
 import { StvSelectComponent } from "./stv-select/stv-select.component";
 import { StvSplitterComponent } from "./stv-splitter/stv-splitter.component";
 import { StvTabsComponent } from "./stv-tabs/stv-tabs.component";
+import { StvExpansionPanelComponent } from './stv-expansion-panel/stv-expansion-panel.component';
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import { StvTabsComponent } from "./stv-tabs/stv-tabs.component";
         StvSelectComponent,
         StvSplitterComponent,
         StvTabsComponent,
+        StvExpansionPanelComponent,
     ],
     exports: [
         StvFileInputComponent,
@@ -24,6 +26,7 @@ import { StvTabsComponent } from "./stv-tabs/stv-tabs.component";
         StvSelectComponent,
         StvSplitterComponent,
         StvTabsComponent,
+        StvExpansionPanelComponent,
     ],
     imports: [
         BrowserModule,

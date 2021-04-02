@@ -3,9 +3,10 @@ import * as state from "src/app/state";
 import * as cytoscape from "cytoscape";
 import { WrappedNodeExpr } from "@angular/compiler";
 import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
+import { Observable, of } from "rxjs";
 
 @Injectable({
-    providedIn: "root",
+    providedIn: "root", // singleton service
 })
 export class StvGraphService {
 
@@ -13,12 +14,13 @@ export class StvGraphService {
     private userZoomEnabled: boolean = true;
     private zoomAnimationSpeed: number = 200;
 
-    public stateLabels: Array<String> = []; // all keys
-    public actionLabels: Array<String> = []; // all keys
+    public stateLabels: Array<any> = [];
+    public actionLabels: Array<any> = [];
+
 
 
     constructor() { }
-
+    
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
         // @todo YK (advanced graph rendering) + (use three consts below while initializing graph or call three methods this.update...() after graph initialization)
         console.log(graph);
@@ -29,10 +31,24 @@ export class StvGraphService {
                 bgn: node.bgn,
                 T: node.T,
             },
-            classes: node.bgn ? "bgn" : "",
+            classes: "withStateLabels " + (node.bgn ? "bgn" : ""),
         }));
 
-        this.stateLabels = [...new Set([nodes.map(x => Object.keys(x.data.T))].flat(2))];
+        this.stateLabels = [...new Set([nodes.map(x => Object.keys(x.data.T))].flat(2))]
+            // .map(x => ({
+            //     name: x,
+            //     _show: false,
+            //     get val(){
+            //         return this._show;
+            //     },
+            //     set val(x){
+            //         this._show = x;
+            //     }
+            // }));
+            .map(x => ({"name": x, "val": false}));
+            // .reduce( (obj,key)=>((obj as any)[key]=false,obj), {})
+
+        
 
         const edges: cytoscape.ElementDefinition[] = graph.links.map(link => ({
             data: {
@@ -41,9 +57,11 @@ export class StvGraphService {
                 target: `n_${link.target}`,
                 T: link.T,
             },
+            classes: "withActionLabels"
         }));
 
-        this.actionLabels = [...new Set([edges.map(x => x.data.T)].flat(2))];
+        this.actionLabels = [...new Set([edges.map(x => x.data.T)].flat(2))]
+            .map(x => ({"name": x, "val": false}));
 
         // @todo beautify labels
         const styleArr: cytoscape.Stylesheet[] = [
@@ -105,17 +123,34 @@ export class StvGraphService {
         });
 
         // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
-
         console.log(this.cy);
     }
 
     private stateLabelsToString(el: cytoscape.EdgeSingular) {
-        // @todo YK add filter to only show selected keys
-        return JSON.stringify(el.data("T")).replace(/\"/g, "").split(',').join(',\n ');
+        const visible = this.stateLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.val,acc),{});
+        const labels = JSON.stringify(el.data("T")).replace(/\"/g, "")
+            .replace(/[\{\}]/g, "")
+            .split(',')
+            .filter(x => visible[x.split(':')[0]] || false );
+
+        
+        return labels.length>0 ? "{"+labels.join(',\n ')+"}" : "";
+        // return JSON.stringify(el.data("T")).replace(/\"/g, "").split(',').join(',\n ');
+    }
+
+    // @todo YK: re-work fix (make it less ugly)
+    reloadStateLabels(): void{
+        this.toggleStateLabels();
+        this.toggleStateLabels();
     }
 
     toggleStateLabels(): void {
         this.cy?.nodes().toggleClass("withStateLabels");
+    }
+
+    reloadActionLabels(): void{
+        this.toggleActionLabels();
+        this.toggleActionLabels();
     }
 
     toggleActionLabels(): void {

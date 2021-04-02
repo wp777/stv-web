@@ -1,0 +1,13 @@
+<ng-container #container>
+    <div class="expansion-panel__header" (click)="onToggleClick()">
+        <span class="fas fa-chevron-{{ collapsed ? 'right' : 'down'}}"></span>
+        <span *ngIf="headerText">
+            {{headerText}}
+        </span>
+    </div>
+
+    <div class="expansion-panel__body" 
+        *ngIf="!collapsed">
+        <ng-content></ng-content>
+    </div>
+</ng-container>

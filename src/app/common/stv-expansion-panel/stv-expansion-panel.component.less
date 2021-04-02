@@ -1,0 +1,27 @@
+.expansion-panel__header{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 10px 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 18px;
+    
+    &:hover{
+        color: rgb(82, 82, 82);
+    }
+}
+
+.expansion-panel__body{
+    overflow: hidden;
+    // height: 0;
+    transition: height 0.2s;
+    // height: auto;
+}
+
+.foo{
+    height: auto;
+    transition: height 2s;
+}

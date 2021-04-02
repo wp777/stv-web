@@ -26,23 +26,51 @@ export class StvViewSettingsComponent implements OnInit, OnDestroy {
             viewSettings.showStateLabels$.subscribe(() => this.showStateLabels = viewSettings.showStateLabels)
         );
     }
+
+    get stateLabels(): Array<any>{
+        return this.graphService.stateLabels;
+    }
+
+    get actionLabels(): Array<any>[]{
+        return this.graphService.actionLabels;
+    }
+
+    get allStateLabelsShown(): Boolean{
+        return this.graphService.stateLabels.reduce((acc,x)=>acc&&x.val, true);
+    }
+
+    get allActionLabelsShown(): Boolean{
+        return this.graphService.actionLabels.reduce((acc,x)=>acc&&x.val, true);
+    }
+
+    onSingleStateLabelChanged(i: any):void{
+        this.graphService.stateLabels[i].val = !this.graphService.stateLabels[i].val;
+        this.graphService.reloadStateLabels();
+    }
     
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
     
     ngOnDestroy(): void {
         for (let subscription of this.viewSettingsSubscriptions) {
             subscription.unsubscribe();
         }
     }
+
     
     onShowActionsChanged(): void {
         this.appState.viewSettings.showActions = !this.appState.viewSettings.showActions;
-        this.graphService.toggleActionLabels();
+        this.graphService.actionLabels.forEach(x=>x.val=this.appState.viewSettings.showActions);
+        // this.graphService.toggleActionLabels();
+        this.graphService.reloadActionLabels();
     }
     
     onShowStateLabelsChanged(): void {
         this.appState.viewSettings.showStateLabels = !this.appState.viewSettings.showStateLabels;
-        this.graphService.toggleStateLabels();
+        this.graphService.stateLabels.forEach(x=>x.val=this.appState.viewSettings.showStateLabels);
+
+        // this.graphService.toggleStateLabels();
+        this.graphService.reloadStateLabels();
     }
     
     onZoomInClick(): void {

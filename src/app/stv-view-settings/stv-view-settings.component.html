@@ -1,20 +1,31 @@
 <div class="container">
     <div class="checkboxes">
         <label class="custom-checkbox">
-            <input type="checkbox" [checked]="showStateLabels" (change)="onShowStateLabelsChanged()" />
+            <input type="checkbox" [checked]="allStateLabelsShown" (change)="onShowAllStateLabelsChanged()" />
             <span class="checkbox-tick-wrapper">
                 <i class="fa fa-check checkbox-tick"></i>
             </span>
             <span class="checkbox-text">Show state labels</span>
         </label>
         <label class="custom-checkbox">
-            <input type="checkbox" [checked]="showActions" (change)="onShowActionsChanged()" />
+            <input type="checkbox" [checked]="allActionLabelsShown" (change)="onShowAllActionsChanged()" />
             <span class="checkbox-tick-wrapper">
                 <i class="fa fa-check checkbox-tick"></i>
             </span>
             <span class="checkbox-text">Show all actions</span>
         </label>
     </div>
+
+    <div class="checkboxes">
+        <label class="custom-checkbox" *ngFor="let label of stateLabels; let i = index">
+            <input type="checkbox" [checked]="label.val" (change)="onSingleStateLabelChanged(i)"/>
+            <span class="checkbox-tick-wrapper">
+                <i class="fa fa-check checkbox-tick"></i>
+            </span>
+            <span class="checkbox-text">{{label.name}}</span>
+        </label>
+    </div>
+    
     <div class="zoom-controls">
         <button title="Zoom out" (click)="onZoomOutClick()"><i class="fa fa-minus"></i></button>
         <button title="Zoom in" (click)="onZoomInClick()"><i class="fa fa-plus"></i></button>

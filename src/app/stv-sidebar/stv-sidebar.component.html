@@ -1,10 +1,23 @@
 <div class="container">
-    <div class="upper-container">
+    <!-- <div class="upper-container">
         <div class="mode-selector-container">
             <stv-mode-selector></stv-mode-selector>
         </div>
         <ng-content></ng-content>
     </div>
     <stv-splitter class="horizontal"></stv-splitter>
-    <stv-view-settings></stv-view-settings>
+    <stv-view-settings></stv-view-settings> -->
+
+
+    <div class="mode-selector-container">
+        <stv-mode-selector></stv-mode-selector>
+    </div>
+    <stv-expansion-panel
+            [headerText]="('Group1')">
+            <ng-content></ng-content>
+        </stv-expansion-panel>
+    <stv-expansion-panel
+        [headerText]="('Group2')">
+        <stv-view-settings></stv-view-settings>
+    </stv-expansion-panel>
 </div>
