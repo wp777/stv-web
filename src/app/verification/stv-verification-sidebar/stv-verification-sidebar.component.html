@@ -1,4 +1,4 @@
-<stv-select [value]="modelType" (valueChanged)="onModelTypeChanged($event)" class="model-type-selector">
+<stv-select [value]="modelType" (valueChanged)="onModelTypeChanged($event)" class="model-type-selector first-in-tab-context" data-sidebar-tab-id="generate">
     <div data-value="fromFile">From file</div>
     <div data-value="tianJi">Tian Ji</div>
     <div data-value="castles">Castles</div>
@@ -6,14 +6,15 @@
     <div data-value="drones">Drones</div>
     <div data-value="simpleVoting">Simple Voting</div>
 </stv-select>
-<div class="model-parameters-container">
+<div class="model-parameters-container" data-sidebar-tab-id="generate">
     <router-outlet name="verification-model-parameters"></router-outlet>
 </div>
-<div class="actions-container">
+<div class="actions-container" data-sidebar-tab-id="generate">
     <div class="row">
         <button class="theme col-12" (click)="onGenerateClick()" [disabled]="!canGenerate"><span>Generate</span></button>
     </div>
-    
+</div>
+<div class="actions-container first-in-tab-context" data-sidebar-tab-id="verify">
     <h4>Formula to be verified</h4>
     <code class="formula">{{formula || "(unknown)"}}</code>
     

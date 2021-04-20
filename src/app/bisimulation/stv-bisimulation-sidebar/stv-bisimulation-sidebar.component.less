@@ -4,7 +4,9 @@
 
 .model-parameters-container,
 .actions-container {
-    margin-top: 10px;
+    &:not(.first-in-tab-context) {
+        margin-top: 10px;
+    }
 }
 
 .model-parameters-container {

@@ -1,4 +1,4 @@
-<div class="model-parameters-container">
+<div class="model-parameters-container first-in-tab-context" data-sidebar-tab-id="generate">
     <h4>Model 1 file</h4>
     <div class="form">
         <stv-file-input id="model1-file" class="full-width-input" (fileListChanged)="onModel1FileListChanged($event)"></stv-file-input>
@@ -9,20 +9,20 @@
     </div>
 </div>
 
-<div class="actions-container">
+<div class="actions-container" data-sidebar-tab-id="generate">
     <div class="row">
         <button class="theme col-12" (click)="onGenerateClick()" [disabled]="!canGenerate"><span>Generate</span></button>
     </div>
 </div>
 
-<div class="model-parameters-container">
+<div class="model-parameters-container" data-sidebar-tab-id="generate">
     <h4>Bisimulation specification file</h4>
     <div class="form">
         <stv-file-input id="bisimulation-specification-file" class="full-width-input" (fileListChanged)="onBisimulationSpecificationFileListChanged($event)"></stv-file-input>
     </div>
 </div>
 
-<div class="actions-container">
+<div class="actions-container" data-sidebar-tab-id="generate">
     <div class="row">
         <button class="theme col-12" (click)="onCheckClick()" [disabled]="!canCheck"><span>Check</span></button>
     </div>
@@ -31,7 +31,7 @@
     <code class="coalition-A">{{coalitionA || "(unknown)"}}</code>
 </div>
 
-<div class="actions-container">
+<div class="actions-container first-in-tab-context" data-sidebar-tab-id="verify">
     <h4>Verification</h4>
     <div class="row">
         <button class="theme col-6" (click)="onVerifyLeftClick()" [disabled]="!canVerifyLeft"><span>Verify left</span></button>
