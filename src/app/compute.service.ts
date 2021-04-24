@@ -18,6 +18,14 @@ type RawApproximationResult = ["0" | "1", number, string];
 
 type RawDominoDfsResult = ["0" | "1", string];
 
+interface RawBisimulationCheckingResult {
+    bisimulation_result: boolean;
+    coalition: string[];
+    mapping: Array<[number[], number[]]>;
+    model1: string;
+    model2: string;
+}
+
 export interface ApproximationDoesNotHaveToHoldResult {
     type: "approximationDoesNotHaveToHold";
     numStatesWhereFormulaHolds: number;
@@ -49,6 +57,10 @@ export interface DominoDfsResult {
     strategyObjectiveString: string;
 }
 
+export interface BisimulationCheckingResult {
+    modelsAreABisimilar: boolean;
+    coalition: string[];
+}
 
 @Injectable({
     providedIn: "root",
@@ -151,6 +163,23 @@ export class ComputeService {
         };
         const rawResult = await this.requestCompute<Types.actions.DominoDfs, RawDominoDfsResult>(action);
         return this.convertRawResultToDominoDfsResult(rawResult);
+    }
+    
+    async checkBisimulation(model1: state.models.File, model2: state.models.File, specificationModel: state.models.parameters.File): Promise<BisimulationCheckingResult> {
+        const model1Parameters: Types.models.parameters.File = model1.parameters.getPlainModelParameters();
+        const model2Parameters: Types.models.parameters.File = model2.parameters.getPlainModelParameters();
+        const specification: Types.models.parameters.File = specificationModel.getPlainModelParameters();
+        const action: Types.actions.BisimulationChecking = {
+            type: "bisimulationChecking",
+            model1Parameters: model1Parameters,
+            model2Parameters: model2Parameters,
+            specification: specification,
+        };
+        const rawResult = await this.requestCompute<Types.actions.BisimulationChecking, RawBisimulationCheckingResult>(action);
+        return {
+            modelsAreABisimilar: rawResult.bisimulation_result,
+            coalition: rawResult.coalition,
+        };
     }
     
     private convertRawResultToDominoDfsResult(result: RawDominoDfsResult): DominoDfsResult {

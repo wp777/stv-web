@@ -4,6 +4,7 @@ import { debounce } from "rxjs/operators";
 import { StvSelectComponent } from "src/app/common/stv-select/stv-select.component";
 import { ComputeService } from "src/app/compute.service";
 import { ApproximationModals } from "src/app/modals/ApproximationModals";
+import { BisimulationCheckingModals } from "src/app/modals/BisimulationCheckingModals";
 import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
 import * as state from "src/app/state";
 import { InputFileReader } from "src/app/utils";
@@ -66,7 +67,7 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
         this.canVerifyRight = this.getBisimulationState().canVerifyModel2();
         this.leftFormula = this.getBisimulationModel1().formula;
         this.rightFormula = this.getBisimulationModel2().formula;
-        this.coalitionA = null; // @todo WP
+        this.coalitionA = null;
     }
     
     async onModel1FileListChanged(fileList: FileList): Promise<void> {
@@ -98,9 +99,14 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
         await this.generateModel(this.getBisimulationModel2(), false);
     }
     
-    onCheckClick(): void {
-        // @todo WP check bisimulation
-        console.log(this.appState);
+    async onCheckClick(): Promise<void> {
+        await this.checkBisimulation();
+    }
+    
+    async checkBisimulation(): Promise<void> {
+        const result = await this.computeService.checkBisimulation(this.getBisimulationModel1(), this.getBisimulationModel2(), this.getBisimulationSpecificationParameters());
+        this.coalitionA = result.coalition[0];
+        BisimulationCheckingModals.showForResult(result);
     }
     
     async generateModel(model: state.models.File, reduced: boolean): Promise<void> {
