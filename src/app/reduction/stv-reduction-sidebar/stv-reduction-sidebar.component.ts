@@ -141,7 +141,6 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     }
     
     onAppStateChanged(): void {
-        console.log("RED")
         this.canGenerateGlobal = this.getReductionState().canGenerateGlobalModel();
         this.canGenerateReduced = this.getReductionState().canGenerateReducedModel();
         this.canVerifyGlobal = this.getReductionState().canVerifyGlobalModel();
