@@ -8,7 +8,7 @@ import { StvVerificationFromFileParametersComponent } from "./stv-verification-f
 import { StvVerificationSimpleVotingParametersComponent } from "./stv-verification-simpleVoting-parameters/stv-verification-simpleVoting-parameters.component";
 import { StvVerificationTianJiParametersComponent } from "./stv-verification-tianJi-parameters/stv-verification-tianJi-parameters.component";
 import { StvVerificationMainComponent } from "./stv-verification-main/stv-verification-main.component";
-import { StvVerificationParametersComponent } from "./stv-verification-sidebar/stv-verification-sidebar.component";
+import { StvVerificationSidebarComponent } from "./stv-verification-sidebar/stv-verification-sidebar.component";
 
 const verificationMainComponentRoute = {
     path: "",
@@ -19,7 +19,7 @@ const verificationMainComponentRoute = {
 const verificationParametersComponentRoute = {
     path: "",
     pathMatch: "full",
-    component: StvVerificationParametersComponent,
+    component: StvVerificationSidebarComponent,
     outlet: "sidebar-parameters",
 };
 

@@ -14,7 +14,7 @@ import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
     templateUrl: "./stv-verification-sidebar.component.html",
     styleUrls: ["./stv-verification-sidebar.component.less"],
 })
-export class StvVerificationParametersComponent implements OnInit, OnDestroy {
+export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     
     _canGenerate: boolean = false;
     get canGenerate(): boolean { return this._canGenerate; }

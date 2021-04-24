@@ -37,12 +37,12 @@ export class StvFileInputComponent implements OnInit {
         this.fileListChanged.emit(fileList);
     }
     
-    onNativeInputValueChanged(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        this.setValue(input.value);
+    onNativeInputValueChanged(): void {
+        const nativeInput = this.nativeInputRef?.nativeElement as HTMLInputElement;
+        this.setValue(nativeInput.value, nativeInput.files!);
     }
     
-    setValue(value: string): void {
+    setValue(value: string, fileList: FileList): void {
         this.value = value;
         if (value == "") {
             this.displayedValue = StvFileInputComponent.EMPTY_VALUE_INFO;
@@ -53,8 +53,7 @@ export class StvFileInputComponent implements OnInit {
             this.displayedValue = pathElements[pathElements.length - 1];
             this.hasValue = true;
         }
-        const input = this.nativeInputRef?.nativeElement as HTMLInputElement;
-        this.emitFileListChanged(input.files!);
+        this.emitFileListChanged(fileList);
     }
     
     onClearValueClick(event: MouseEvent): void {
@@ -62,7 +61,7 @@ export class StvFileInputComponent implements OnInit {
         event.preventDefault();
         const input = this.nativeInputRef?.nativeElement as HTMLInputElement;
         input.value = "";
-        this.setValue("");
+        this.setValue("", input.files!);
     }
     
 }

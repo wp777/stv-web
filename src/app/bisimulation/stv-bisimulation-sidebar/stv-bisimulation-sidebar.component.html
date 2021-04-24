@@ -32,9 +32,55 @@
 </div>
 
 <div class="actions-container first-in-tab-context" data-sidebar-tab-id="verify">
-    <h4>Verification</h4>
+    <h3 style="margin-top: 0">Left model</h3>
+    
+    <h4>Formula to be verified</h4>
+    <code class="formula">{{leftFormula || "(unknown)"}}</code>
+    
+    <h4>Verification - approximation</h4>
     <div class="row">
-        <button class="theme col-6" (click)="onVerifyLeftClick()" [disabled]="!canVerifyLeft"><span>Verify left</span></button>
-        <button class="theme col-6" (click)="onVerifyRightClick()" [disabled]="!canVerifyRight"><span>Verify right</span></button>
+        <button class="theme col-6" (click)="onLeftLowerApproximationClick()" [disabled]="!canVerifyLeft"><span>Lower approx.</span></button>
+        <button class="theme col-6" (click)="onLeftUpperApproximationClick()" [disabled]="!canVerifyLeft"><span>Upper approx.</span></button>
+    </div>
+    
+    <h4>Verification - Domino DFS</h4>
+
+    <div class="row">
+        <stv-select class="domino-dfs-heuristic-selector col-12" [value]="leftDominoDfsHeuristic" (valueChanged)="onLeftDominoDfsHeuristicChanged($event)" #dominoDfsHeuristicSelector>
+            <div data-value="basic">Basic heuristic</div>
+            <div data-value="control">Control heuristic</div>
+            <div data-value="epistemic">Epistemic heuristic</div>
+            <div data-value="visitedStates">Visited states heuristic</div>
+        </stv-select>
+    </div>
+    <div class="row">
+        <button class="theme col-12" (click)="onLeftDominoDfsClick()" [disabled]="!canVerifyLeft"><span>Domino DFS</span></button>
+    </div>
+</div>
+
+<div class="actions-container" data-sidebar-tab-id="verify">
+    <h3>Right model</h3>
+    
+    <h4>Formula to be verified</h4>
+    <code class="formula">{{rightFormula || "(unknown)"}}</code>
+    
+    <h4>Verification - approximation</h4>
+    <div class="row">
+        <button class="theme col-6" (click)="onRightLowerApproximationClick()" [disabled]="!canVerifyRight"><span>Lower approx.</span></button>
+        <button class="theme col-6" (click)="onRightUpperApproximationClick()" [disabled]="!canVerifyRight"><span>Upper approx.</span></button>
+    </div>
+    
+    <h4>Verification - Domino DFS</h4>
+
+    <div class="row">
+        <stv-select class="domino-dfs-heuristic-selector col-12" [value]="rightDominoDfsHeuristic" (valueChanged)="onRightDominoDfsHeuristicChanged($event)" #dominoDfsHeuristicSelector>
+            <div data-value="basic">Basic heuristic</div>
+            <div data-value="control">Control heuristic</div>
+            <div data-value="epistemic">Epistemic heuristic</div>
+            <div data-value="visitedStates">Visited states heuristic</div>
+        </stv-select>
+    </div>
+    <div class="row">
+        <button class="theme col-12" (click)="onRightDominoDfsClick()" [disabled]="!canVerifyRight"><span>Domino DFS</span></button>
     </div>
 </div>

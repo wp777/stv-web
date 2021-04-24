@@ -1,9 +1,13 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Subscription, interval } from "rxjs";
 import { debounce } from "rxjs/operators";
+import { StvSelectComponent } from "src/app/common/stv-select/stv-select.component";
 import { ComputeService } from "src/app/compute.service";
+import { ApproximationModals } from "src/app/modals/ApproximationModals";
+import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
 import * as state from "src/app/state";
 import { InputFileReader } from "src/app/utils";
+import * as Types from "stv-types";
 
 @Component({
     selector: "stv-bisimulation-sidebar",
@@ -11,6 +15,12 @@ import { InputFileReader } from "src/app/utils";
     styleUrls: ["./stv-bisimulation-sidebar.component.less"],
 })
 export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
+    
+    @ViewChild("leftDominoDfsHeuristicSelector")
+    leftDominoDfsHeuristicSelectorRef?: StvSelectComponent;
+    
+    @ViewChild("rightDominoDfsHeuristicSelector")
+    rightDominoDfsHeuristicSelectorRef?: StvSelectComponent;
     
     _canGenerate: boolean = false;
     get canGenerate(): boolean { return this._canGenerate; }
@@ -29,6 +39,10 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
     set canVerifyRight(canVerifyRight: boolean) { this._canVerifyRight = canVerifyRight; }
     
     coalitionA: string | null = null;
+    leftFormula: string | null = null;
+    rightFormula: string | null = null;
+    leftDominoDfsHeuristic: Types.actions.DominoDfsHeuristic = "basic";
+    rightDominoDfsHeuristic: Types.actions.DominoDfsHeuristic = "basic";
     
     appStateSubscription: Subscription;
     
@@ -50,6 +64,8 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
         this.canCheck = this.getBisimulationState().canCheckBisimulation();
         this.canVerifyLeft = this.getBisimulationState().canVerifyModel1();
         this.canVerifyRight = this.getBisimulationState().canVerifyModel2();
+        this.leftFormula = this.getBisimulationModel1().formula;
+        this.rightFormula = this.getBisimulationModel2().formula;
         this.coalitionA = null; // @todo WP
     }
     
@@ -87,18 +103,55 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
         console.log(this.appState);
     }
     
-    async onVerifyLeftClick(): Promise<void> {
-        // @todo WP goto Verification/FromFile
-        console.log(this.appState);
-    }
-    
-    async onVerifyRightClick(): Promise<void> {
-        // @todo WP goto Verification/FromFile
-        console.log(this.appState);
-    }
-    
     async generateModel(model: state.models.File, reduced: boolean): Promise<void> {
         await this.computeService.generateModel(model, reduced);
+    }
+    
+    async onLeftLowerApproximationClick(): Promise<void> {
+        await this.verifyModelUsingLowerApproximation(this.getBisimulationModel1(), false);
+    }
+    
+    async onRightLowerApproximationClick(): Promise<void> {
+        await this.verifyModelUsingLowerApproximation(this.getBisimulationModel2(), false);
+    }
+    
+    async verifyModelUsingLowerApproximation(model: state.models.File, reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingLowerApproximation(model, reduced);
+        ApproximationModals.showForResult(result);
+    }
+    
+    async onLeftUpperApproximationClick(): Promise<void> {
+        await this.verifyModelUsingUpperApproximation(this.getBisimulationModel1(), false);
+    }
+    
+    async onRightUpperApproximationClick(): Promise<void> {
+        await this.verifyModelUsingUpperApproximation(this.getBisimulationModel2(), false);
+    }
+    
+    async verifyModelUsingUpperApproximation(model: state.models.File, reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingUpperApproximation(model, reduced);
+        ApproximationModals.showForResult(result);
+    }
+    
+    async onLeftDominoDfsClick(): Promise<void> {
+        await this.verifyModelUsingDominoDfs(this.getBisimulationModel1(), false, this.leftDominoDfsHeuristic);
+    }
+    
+    async onRightDominoDfsClick(): Promise<void> {
+        await this.verifyModelUsingDominoDfs(this.getBisimulationModel2(), false, this.rightDominoDfsHeuristic);
+    }
+    
+    async verifyModelUsingDominoDfs(model: state.models.File, reduced: boolean, heuristic: Types.actions.DominoDfsHeuristic): Promise<void> {
+        const result = await this.computeService.verifyModelUsingDominoDfs(model, reduced, heuristic);
+        DominoDfsModals.showForResult(result);
+    }
+    
+    onLeftDominoDfsHeuristicChanged(heuristic: string): void {
+        this.leftDominoDfsHeuristic = heuristic as Types.actions.DominoDfsHeuristic;
+    }
+    
+    onRightDominoDfsHeuristicChanged(heuristic: string): void {
+        this.rightDominoDfsHeuristic = heuristic as Types.actions.DominoDfsHeuristic;
     }
     
     private getBisimulationState(): state.actions.Bisimulation {
