@@ -1,0 +1,61 @@
+@import "../vars.less";
+
+.modal-curtain {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px) grayscale(1);
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    
+    .modal {
+        position: relative;
+        background: @mainPanelBg;
+        box-shadow: #000 0 0 15px;
+        pointer-events: auto;
+        
+        .modal-top-bar {
+            background: @themeColor;
+            display: flex;
+            align-items: center;
+            user-select: none;
+            height: 40px;
+            
+            .modal-title {
+                flex: 1 1 auto;
+                display: block;
+                color: @themeColorContrast;
+                font-weight: bold;
+                padding-left: 15px;
+            }
+    
+            .modal-close-button {
+                flex: 0 0 auto;
+                text-align: center;
+                border-radius: 0;
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
+        .modal-content-container {
+            font-size: 16px;
+            padding: 30px;
+        }
+    }
+}

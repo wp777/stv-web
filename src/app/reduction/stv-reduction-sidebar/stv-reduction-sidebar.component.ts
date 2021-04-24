@@ -7,6 +7,8 @@ import { StvSelectComponent } from "src/app/common/stv-select/stv-select.compone
 import { Subscription, interval } from "rxjs";
 import { debounce } from "rxjs/operators";
 import { InputFileReader } from "src/app/utils";
+import { ApproximationModals } from "src/app/modals/ApproximationModals";
+import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
 
 @Component({
     selector: "stv-reduction-sidebar",
@@ -86,34 +88,44 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
         await this.computeService.generateModel(this.getReductionModel(), reduced);
     }
     
-    onLowerApproximationGlobalClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async onLowerApproximationGlobalClick(): Promise<void> {
+        await this.verifyModelUsingLowerApproximation(false);
     }
     
-    onLowerApproximationReducedClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async onLowerApproximationReducedClick(): Promise<void> {
+        await this.verifyModelUsingLowerApproximation(true);
     }
     
-    onUpperApproximationGlobalClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async verifyModelUsingLowerApproximation(reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingLowerApproximation(this.getReductionModel(), reduced);
+        ApproximationModals.showForResult(result);
     }
     
-    onUpperApproximationReducedClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async onUpperApproximationGlobalClick(): Promise<void> {
+        await this.verifyModelUsingUpperApproximation(false);
     }
     
-    onDominoDfsGlobalClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async onUpperApproximationReducedClick(): Promise<void> {
+        await this.verifyModelUsingUpperApproximation(true);
     }
     
-    onDominoDfsReducedClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async verifyModelUsingUpperApproximation(reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingUpperApproximation(this.getReductionModel(), reduced);
+        ApproximationModals.showForResult(result);
+    }
+    
+    async onDominoDfsGlobalClick(): Promise<void> {
+        await this.verifyModelUsingDominoDfs(false);
+    }
+    
+    async onDominoDfsReducedClick(): Promise<void> {
+        await this.verifyModelUsingDominoDfs(true);
+    }
+    
+    async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
+        const heuristic: Types.actions.DominoDfsHeuristic = reduced ? this.dominoDfsHeuristicReduced : this.dominoDfsHeuristicGlobal;
+        const result = await this.computeService.verifyModelUsingDominoDfs(this.getReductionModel(), reduced, heuristic);
+        DominoDfsModals.showForResult(result);
     }
     
     onDominoDfsHeuristicGlobalChanged(heuristic: string): void {

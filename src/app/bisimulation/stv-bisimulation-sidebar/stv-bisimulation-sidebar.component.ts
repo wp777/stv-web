@@ -83,17 +83,17 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
     }
     
     onCheckClick(): void {
-        // @todo WP
+        // @todo WP check bisimulation
         console.log(this.appState);
     }
     
-    onVerifyLeftClick(): void {
-        // @todo WP
+    async onVerifyLeftClick(): Promise<void> {
+        // @todo WP goto Verification/FromFile
         console.log(this.appState);
     }
     
-    onVerifyRightClick(): void {
-        // @todo WP
+    async onVerifyRightClick(): Promise<void> {
+        // @todo WP goto Verification/FromFile
         console.log(this.appState);
     }
     
