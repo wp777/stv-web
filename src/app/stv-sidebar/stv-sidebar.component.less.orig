@@ -15,7 +15,10 @@
     
     > .upper-container {
         flex: 1 1 auto;
+<<<<<<< HEAD
+=======
         padding: 0 10px 10px 10px;
+>>>>>>> origin/master
         min-height: 0;
         overflow: auto;
         ::ng-deep > *:not(.first-in-tab-context) {

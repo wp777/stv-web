@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { StvVerificationParametersComponent } from "./stv-verification-sidebar.component";
+import { StvVerificationSidebarComponent } from "./stv-verification-sidebar.component";
 
-describe("StvVerificationParametersComponent", () => {
-    let component: StvVerificationParametersComponent;
-    let fixture: ComponentFixture<StvVerificationParametersComponent>;
+describe("StvVerificationSidebarComponent", () => {
+    let component: StvVerificationSidebarComponent;
+    let fixture: ComponentFixture<StvVerificationSidebarComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [StvVerificationParametersComponent],
+            declarations: [StvVerificationSidebarComponent],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(StvVerificationParametersComponent);
+        fixture = TestBed.createComponent(StvVerificationSidebarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

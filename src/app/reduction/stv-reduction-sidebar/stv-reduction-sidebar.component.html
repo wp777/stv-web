@@ -1,16 +1,17 @@
-<div class="model-parameters-container">
+<div class="model-parameters-container first-in-tab-context" data-sidebar-tab-id="generate">
     <h4>File</h4>
     <div class="form">
         <stv-file-input id="from-file--file" class="full-width-input" (fileListChanged)="onFileListChanged($event)"></stv-file-input>
     </div>
 </div>
 
-<div class="actions-container">
+<div class="actions-container" data-sidebar-tab-id="generate">
     <div class="row">
         <button class="theme col-6" (click)="onGenerateGlobalClick()" [disabled]="!canGenerateGlobal"><span>Generate global</span></button>
         <button class="theme col-6" (click)="onGenerateReducedClick()" [disabled]="!canGenerateReduced"><span>Generate reduced</span></button>
     </div>
-    
+</div>
+<div class="actions-container first-in-tab-context" data-sidebar-tab-id="verify">
     <h4>Formula to be verified</h4>
     <code class="formula">{{formula || "(unknown)"}}</code>
     

@@ -6,13 +6,15 @@ import { ComputeService } from "src/app/compute.service";
 import { StvSelectComponent } from "src/app/common/stv-select/stv-select.component";
 import { Subscription, interval } from "rxjs";
 import { debounce } from "rxjs/operators";
+import { ApproximationModals } from "src/app/modals/ApproximationModals";
+import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
 
 @Component({
     selector: "stv-verification-sidebar",
     templateUrl: "./stv-verification-sidebar.component.html",
     styleUrls: ["./stv-verification-sidebar.component.less"],
 })
-export class StvVerificationParametersComponent implements OnInit, OnDestroy {
+export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     
     _canGenerate: boolean = false;
     get canGenerate(): boolean { return this._canGenerate; }
@@ -69,19 +71,31 @@ export class StvVerificationParametersComponent implements OnInit, OnDestroy {
         await this.computeService.generateModel(this.getVerificationModel(), reduced);
     }
     
-    onLowerApproximationClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async onLowerApproximationClick(): Promise<void> {
+        await this.verifyModelUsingLowerApproximation(false);
     }
     
-    onUpperApproximationClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async verifyModelUsingLowerApproximation(reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingLowerApproximation(this.getVerificationModel(), reduced);
+        ApproximationModals.showForResult(result);
     }
     
-    onDominoDfsClick(): void {
-        // @todo WP
-        console.log(this.appState);
+    async onUpperApproximationClick(): Promise<void> {
+        await this.verifyModelUsingUpperApproximation(false);
+    }
+    
+    async verifyModelUsingUpperApproximation(reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingUpperApproximation(this.getVerificationModel(), reduced);
+        ApproximationModals.showForResult(result);
+    }
+    
+    async onDominoDfsClick(): Promise<void> {
+        await this.verifyModelUsingDominoDfs(false);
+    }
+    
+    async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
+        const result = await this.computeService.verifyModelUsingDominoDfs(this.getVerificationModel(), reduced, this.dominoDfsHeuristic);
+        DominoDfsModals.showForResult(result);
     }
     
     onDominoDfsHeuristicChanged(heuristic: string): void {

@@ -1,4 +1,8 @@
 <div class="container">
+<<<<<<< HEAD
+    <!-- <div class="upper-container">
+        <div class="mode-selector-container">
+=======
     <div class="sidebar-tabs" #sidebarTabs>
         <ul>
             <li class="active" data-sidebar-tab-button-id="generate" (click)="onTabClick($event)">Generate</li>
@@ -8,6 +12,7 @@
     </div>
     <div class="upper-container" data-sidebar-selected-tab-id="generate" #upperContainer>
         <div class="mode-selector-container" data-sidebar-tab-id="generate">
+>>>>>>> origin/master
             <stv-mode-selector></stv-mode-selector>
         </div>
         <ng-content></ng-content>
