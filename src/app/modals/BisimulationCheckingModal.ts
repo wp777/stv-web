@@ -6,7 +6,7 @@ export class BisimulationCheckingModal extends Modal {
         super(
             "Bisimulation checking result",
             `
-                <div>
+                <div class="main-message">
                     Models are ${modelsAreABisimilar ? "" : "not "}A-bisimilar.
                 </div>
             `,

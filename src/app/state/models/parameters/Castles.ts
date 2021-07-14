@@ -1,6 +1,7 @@
 import * as Types from "stv-types";
 import { ModelParameters } from "./ModelParameters";
 import { Validation } from "src/app/utils";
+import { ConfigProvider } from "src/app/config.provider";
 
 export class Castles extends ModelParameters<Types.models.parameters.Castles> {
 
@@ -31,10 +32,11 @@ export class Castles extends ModelParameters<Types.models.parameters.Castles> {
     }
     
     areModelParametersValid(): boolean {
-        return Validation.isPositiveInteger(this.castle1Size)
-            && Validation.isPositiveInteger(this.castle2Size)
-            && Validation.isPositiveInteger(this.castle3Size)
-            && Validation.isPositiveInteger(this.life);
+        const config = ConfigProvider.instance.getConfig().parameterizedModels.castles;
+        return Validation.isInteger(this.castle1Size) && Validation.isIntegerInRange(this.castle1Size, config.min.castle1Size, config.max.castle1Size)
+            && Validation.isInteger(this.castle2Size) && Validation.isIntegerInRange(this.castle2Size, config.min.castle2Size, config.max.castle2Size)
+            && Validation.isInteger(this.castle3Size) && Validation.isIntegerInRange(this.castle3Size, config.min.castle3Size, config.max.castle3Size)
+            && Validation.isInteger(this.life) && Validation.isIntegerInRange(this.life, config.min.life, config.max.life);
     }
     
 }

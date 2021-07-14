@@ -1,4 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { StvFileInputComponent } from "src/app/common/stv-file-input/stv-file-input.component";
+import { ConfigProvider } from "src/app/config.provider";
 import { InputFileReader } from "src/app/utils";
 import * as state from "../../state";
 
@@ -9,17 +11,27 @@ import * as state from "../../state";
 })
 export class StvVerificationFromFileParametersComponent implements OnInit {
     
-    constructor(private appState: state.AppState) {
+    // Config
+    maxModelFileSizeBytes: number | "";
+    
+    @ViewChild("modelFileInput")
+    modelFileInputRef?: ElementRef<StvFileInputComponent>;
+    
+    get modelFileInput(): StvFileInputComponent {
+        return this.modelFileInputRef! as unknown as StvFileInputComponent;
+    }
+    
+    constructor(private appState: state.AppState, private configProvider: ConfigProvider) {
+        const config = this.configProvider.getConfig();
+        this.maxModelFileSizeBytes = config.fileModel.maxFileSizeBytes === ConfigProvider.UNLIMITED ? "" : config.fileModel.maxFileSizeBytes;
+        
         this.getVerificationState().model = new state.models.File();
     }
 
     ngOnInit(): void {}
     
     async onFileListChanged(fileList: FileList): Promise<void> {
-        let modelString = "";
-        if (fileList.length > 0) {
-            modelString = await InputFileReader.read(fileList[0]);
-        }
+        const modelString = await InputFileReader.readWithFileSizeVerification(fileList, this.maxModelFileSizeBytes, this.modelFileInput);
         this.getVerificationModelParameters().modelString = modelString;
     }
     

@@ -28,7 +28,9 @@
         background: @mainPanelBg;
         box-shadow: #000 0 0 15px;
         pointer-events: auto;
-        
+        min-width: 500px;
+        min-height: 300px;
+    
         .modal-top-bar {
             background: @themeColor;
             display: flex;
@@ -57,6 +59,15 @@
         .modal-content-container {
             font-size: 16px;
             padding: 30px;
+            
+            .main-message {
+            }
+            
+            .extra-message {
+                margin-top: 10px;
+                font-size: 13px;
+                color: #888;
+            }
         }
     }
 }

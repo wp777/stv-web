@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Subscription, interval } from "rxjs";
 import { debounce } from "rxjs/operators";
+import { StvFileInputComponent } from "src/app/common/stv-file-input/stv-file-input.component";
 import { StvSelectComponent } from "src/app/common/stv-select/stv-select.component";
 import { ComputeService } from "src/app/compute.service";
+import { ConfigProvider } from "src/app/config.provider";
 import { ApproximationModals } from "src/app/modals/ApproximationModals";
 import { BisimulationCheckingModals } from "src/app/modals/BisimulationCheckingModals";
 import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
@@ -22,6 +24,27 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
     
     @ViewChild("rightDominoDfsHeuristicSelector")
     rightDominoDfsHeuristicSelectorRef?: StvSelectComponent;
+    
+    @ViewChild("model1FileInput")
+    model1FileInputRef?: ElementRef<StvFileInputComponent>;
+    
+    get model1FileInput(): StvFileInputComponent {
+        return this.model1FileInputRef! as unknown as StvFileInputComponent;
+    }
+    
+    @ViewChild("model2FileInput")
+    model2FileInputRef?: ElementRef<StvFileInputComponent>;
+    
+    get model2FileInput(): StvFileInputComponent {
+        return this.model2FileInputRef! as unknown as StvFileInputComponent;
+    }
+    
+    @ViewChild("bisimulationSpecificationFileInput")
+    bisimulationSpecificationFileInputRef?: ElementRef<StvFileInputComponent>;
+    
+    get bisimulationSpecificationFileInput(): StvFileInputComponent {
+        return this.bisimulationSpecificationFileInputRef! as unknown as StvFileInputComponent;
+    }
     
     _canGenerate: boolean = false;
     get canGenerate(): boolean { return this._canGenerate; }
@@ -47,7 +70,17 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
     
     appStateSubscription: Subscription;
     
-    constructor(private appState: state.AppState, private computeService: ComputeService) {
+    // Config
+    maxModel1FileSizeBytes: number | "";
+    maxModel2FileSizeBytes: number | "";
+    maxBisimulationSpecificationFileSizeBytes: number | "";
+    
+    constructor(private appState: state.AppState, private computeService: ComputeService, private configProvider: ConfigProvider) {
+        const config = this.configProvider.getConfig();
+        this.maxModel1FileSizeBytes = config.fileModel.maxFileSizeBytes === ConfigProvider.UNLIMITED ? "" : config.fileModel.maxFileSizeBytes;
+        this.maxModel2FileSizeBytes = config.fileModel.maxFileSizeBytes === ConfigProvider.UNLIMITED ? "" : config.fileModel.maxFileSizeBytes;
+        this.maxBisimulationSpecificationFileSizeBytes = config.mappingFile.maxFileSizeBytes === ConfigProvider.UNLIMITED ? "" : config.mappingFile.maxFileSizeBytes;
+        
         this.appState.action = new state.actions.Bisimulation();
         this.appStateSubscription = appState.state$
             .pipe(debounce(() => interval(10)))
@@ -71,26 +104,17 @@ export class StvBisimulationSidebarComponent implements OnInit, OnDestroy {
     }
     
     async onModel1FileListChanged(fileList: FileList): Promise<void> {
-        let modelString = "";
-        if (fileList.length > 0) {
-            modelString = await InputFileReader.read(fileList[0]);
-        }
+        const modelString = await InputFileReader.readWithFileSizeVerification(fileList, this.maxModel1FileSizeBytes, this.model1FileInput);
         this.getBisimulationModel1Parameters().modelString = modelString;
     }
     
     async onModel2FileListChanged(fileList: FileList): Promise<void> {
-        let modelString = "";
-        if (fileList.length > 0) {
-            modelString = await InputFileReader.read(fileList[0]);
-        }
+        const modelString = await InputFileReader.readWithFileSizeVerification(fileList, this.maxModel2FileSizeBytes, this.model2FileInput);
         this.getBisimulationModel2Parameters().modelString = modelString;
     }
     
     async onBisimulationSpecificationFileListChanged(fileList: FileList): Promise<void> {
-        let modelString = "";
-        if (fileList.length > 0) {
-            modelString = await InputFileReader.read(fileList[0]);
-        }
+        const modelString = await InputFileReader.readWithFileSizeVerification(fileList, this.maxBisimulationSpecificationFileSizeBytes, this.bisimulationSpecificationFileInput);
         this.getBisimulationSpecificationParameters().modelString = modelString;
     }
     

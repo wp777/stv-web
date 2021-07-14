@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
+import { ConfigProvider } from "src/app/config.provider";
 import * as state from "../../state";
+import { NumberInput } from "src/app/utils/NumberInput";
 
 @Component({
     selector: "stv-verification-tian-ji-parameters",
@@ -8,14 +10,30 @@ import * as state from "../../state";
 })
 export class StvVerificationTianJiParametersComponent implements OnInit {
     
-    constructor(private appState: state.AppState) {
+    // Config
+    minHorses: number | "";
+    maxHorses: number | "";
+    
+    constructor(private appState: state.AppState, private configProvider: ConfigProvider) {
+        const config = this.configProvider.getConfig();
+        this.minHorses = config.parameterizedModels.tianJi.min.horses === ConfigProvider.UNLIMITED ? "" : config.parameterizedModels.tianJi.min.horses;
+        this.maxHorses = config.parameterizedModels.tianJi.max.horses === ConfigProvider.UNLIMITED ? "" : config.parameterizedModels.tianJi.max.horses;
+        
         this.getVerificationState().model = new state.models.TianJi();
     }
 
     ngOnInit(): void {}
     
     onHorsesInput(event: Event): void {
-        const input = event.target as HTMLInputElement;
+        this.refreshHorsesFromInput(event.target as HTMLInputElement);
+    }
+    
+    onHorsesBlur(event: Event): void {
+        NumberInput.fixIntValueFromMinMax(event.target as HTMLInputElement);
+        this.refreshHorsesFromInput(event.target as HTMLInputElement);
+    }
+    
+    refreshHorsesFromInput(input: HTMLInputElement) {
         this.getVerificationModelParameters().horses = parseInt(input.value);
     }
     

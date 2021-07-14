@@ -1,11 +1,11 @@
 <div class="model-parameters-container first-in-tab-context" data-sidebar-tab-id="generate">
     <h4>Model 1 file</h4>
     <div class="form">
-        <stv-file-input id="model1-file" class="full-width-input" (fileListChanged)="onModel1FileListChanged($event)"></stv-file-input>
+        <stv-file-input id="model1-file" class="full-width-input" (fileListChanged)="onModel1FileListChanged($event)" #model1FileInput></stv-file-input>
     </div>
     <h4>Model 2 file</h4>
     <div class="form">
-        <stv-file-input id="model2-file" class="full-width-input" (fileListChanged)="onModel2FileListChanged($event)"></stv-file-input>
+        <stv-file-input id="model2-file" class="full-width-input" (fileListChanged)="onModel2FileListChanged($event)" #model2FileInput></stv-file-input>
     </div>
 </div>
 
@@ -18,7 +18,7 @@
 <div class="model-parameters-container" data-sidebar-tab-id="generate">
     <h4>Bisimulation specification file</h4>
     <div class="form">
-        <stv-file-input id="bisimulation-specification-file" class="full-width-input" (fileListChanged)="onBisimulationSpecificationFileListChanged($event)"></stv-file-input>
+        <stv-file-input id="bisimulation-specification-file" class="full-width-input" (fileListChanged)="onBisimulationSpecificationFileListChanged($event)" #bisimulationSpecificationFileInput></stv-file-input>
     </div>
 </div>
 

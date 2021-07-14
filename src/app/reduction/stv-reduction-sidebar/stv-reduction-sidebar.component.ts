@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import * as Types from "stv-types";
 import * as state from "../../state";
@@ -9,6 +9,9 @@ import { debounce } from "rxjs/operators";
 import { InputFileReader } from "src/app/utils";
 import { ApproximationModals } from "src/app/modals/ApproximationModals";
 import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
+import { ErrorModals } from "src/app/modals/ErrorModals";
+import { StvFileInputComponent } from "src/app/common/stv-file-input/stv-file-input.component";
+import { ConfigProvider } from "src/app/config.provider";
 
 @Component({
     selector: "stv-reduction-sidebar",
@@ -39,6 +42,13 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     @ViewChild("dominoDfsHeuristicReducedSelector")
     dominoDfsHeuristicReducedSelectorRef?: StvSelectComponent;
     
+    @ViewChild("modelFileInput")
+    modelFileInputRef?: ElementRef<StvFileInputComponent>;
+    
+    get modelFileInput(): StvFileInputComponent {
+        return this.modelFileInputRef! as unknown as StvFileInputComponent;
+    }
+    
     formula: string | null = null;
     modelType: string = "";
     dominoDfsHeuristicGlobal: Types.actions.DominoDfsHeuristic = "basic";
@@ -47,7 +57,13 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     routerSubscription: Subscription;
     appStateSubscription: Subscription;
     
-    constructor(private router: Router, public appState: state.AppState, private computeService: ComputeService) {
+    // Config
+    maxModelFileSizeBytes: number | "";
+    
+    constructor(private router: Router, public appState: state.AppState, private computeService: ComputeService, private configProvider: ConfigProvider) {
+        const config = this.configProvider.getConfig();
+        this.maxModelFileSizeBytes = config.fileModel.maxFileSizeBytes === ConfigProvider.UNLIMITED ? "" : config.fileModel.maxFileSizeBytes;
+        
         this.appState.action = new state.actions.Reduction();
         this.dominoDfsHeuristicGlobal = this.appState.action.dominoDfsHeuristicGlobal;
         this.dominoDfsHeuristicReduced = this.appState.action.dominoDfsHeuristicReduced;
@@ -149,10 +165,7 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     }
     
     async onFileListChanged(fileList: FileList): Promise<void> {
-        let modelString = "";
-        if (fileList.length > 0) {
-            modelString = await InputFileReader.read(fileList[0]);
-        }
+        const modelString = await InputFileReader.readWithFileSizeVerification(fileList, this.maxModelFileSizeBytes, this.modelFileInput);
         this.getReductionModelParameters().modelString = modelString;
     }
     

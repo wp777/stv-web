@@ -1,6 +1,7 @@
 import * as Types from "stv-types";
 import { Injectable } from "@angular/core";
 import * as state from "./state";
+import { ErrorModals } from "./modals/ErrorModals";
 
 interface SuccessResponse {
     status: "success";
@@ -9,7 +10,7 @@ interface SuccessResponse {
 
 interface ErrorResponse {
     status: "error";
-    error: any;
+    error: string;
 }
 
 type Response = SuccessResponse | ErrorResponse;
@@ -190,23 +191,29 @@ export class ComputeService {
     }
     
     async requestCompute<TRequest extends Types.actions.Action, TResponse>(requestObject: TRequest): Promise<TResponse> {
-        return this.requestJson("compute", requestObject);
+        return this.requestJson("POST", "compute", requestObject);
     }
     
-    async requestJson<TRequest, TResponse>(path: string, requestObject: TRequest): Promise<TResponse> {
+    async requestComputeLimitsConfig(): Promise<Types.config.Config> {
+        return this.requestJson("GET", "computation-limits-config");
+    }
+    
+    async requestJson<TRequest, TResponse>(method: "GET"| "POST", path: string, requestObject?: TRequest): Promise<TResponse> {
         const response = await fetch(
             `/${path}`,
             {
-                method: "POST",
+                method: method,
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(requestObject),
+                body: requestObject ? JSON.stringify(requestObject) : undefined,
             },
         );
         const responseObject = await response.json() as Response;
         if (responseObject.status === "error") {
+            ErrorModals.showForServerError(responseObject.error);
+            console.error(responseObject.error);
             throw new Error("Server error");
         }
         return JSON.parse(responseObject.data);

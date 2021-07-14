@@ -1,6 +1,7 @@
 import * as Types from "stv-types";
 import { ModelParameters } from "./ModelParameters";
 import { Validation } from "src/app/utils";
+import { ConfigProvider } from "src/app/config.provider";
 
 export class Drones extends ModelParameters<Types.models.parameters.Drones> {
     
@@ -21,8 +22,9 @@ export class Drones extends ModelParameters<Types.models.parameters.Drones> {
     }
     
     areModelParametersValid(): boolean {
-        return Validation.isPositiveInteger(this.initialEnergy)
-            && Validation.isPositiveInteger(this.numberOfDrones);
+        const config = ConfigProvider.instance.getConfig().parameterizedModels.drones;
+        return Validation.isInteger(this.initialEnergy) && Validation.isIntegerInRange(this.initialEnergy, config.min.initialEnergy, config.max.initialEnergy)
+            && Validation.isInteger(this.numberOfDrones) && Validation.isIntegerInRange(this.numberOfDrones, config.min.numberOfDrones, config.max.numberOfDrones);
     }
     
 }

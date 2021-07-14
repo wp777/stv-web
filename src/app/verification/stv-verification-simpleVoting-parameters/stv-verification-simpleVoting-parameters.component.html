@@ -1,7 +1,7 @@
 <h4>Parameters</h4>
 <div class="form">
     <label for="simple-voting--voters"><span>Voters</span>:</label>
-    <input type="number" id="simple-voting--voters" min="1" value="1" step="1" (input)="onVotersInput($event)" />
+    <input type="number" id="simple-voting--voters" [min]="minVoters" [max]="maxVoters" value="1" step="1" (input)="onVotersInput($event)" (blur)="onVotersBlur($event)" />
     <label for="simple-voting--candidates"><span>Candidates</span>:</label>
-    <input type="number" id="simple-voting--candidates" min="1" value="1" step="1" (input)="onCandidatesInput($event)" />
+    <input type="number" id="simple-voting--candidates" [min]="minCandidates" [max]="maxCandidates" value="1" step="1" (input)="onCandidatesInput($event)" (blur)="onCandidatesBlur($event)" />
 </div>

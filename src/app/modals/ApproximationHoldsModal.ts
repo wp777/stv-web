@@ -6,7 +6,7 @@ export class ApproximationHoldsModal extends Modal {
         super(
             "Verification result",
             `
-                <div>
+                <div class="main-message">
                     The formula <strong>holds</strong> in the model.<br />
                     Number of states where the formula holds: <strong>${numStatesWhereFormulaHolds}</strong>.
                 </div>
