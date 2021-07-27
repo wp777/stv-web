@@ -125,8 +125,7 @@ export class StvGraphService {
 
     private actionLabelsToString(el:cytoscape.EdgeSingular){
         const visible = this.actionLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
-        // if(visible.some((x: boolean)=>x==true))
-        if(!Object.values(visible).some(x=>x==true))return "";
+        if(!Object.values(visible).some(x=>x==true) || !Array.isArray(el.data("T")))return "";
         
         const labels = el.data("T").map((x: string) => visible[x] ? x : "_" );
         return labels.length>0 ? "("+labels.join(', ')+")" : "";
