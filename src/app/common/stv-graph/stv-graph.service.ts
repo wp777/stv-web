@@ -109,22 +109,29 @@ export class StvGraphService {
 
         // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
         console.log(this.cy);
+        this.cy.elements().on('click', (e) =>{
+            let el = e.target;
+            console.log(e.target);
+            
+            if(el.isNode()){
+                console.log(this.stateLabelsToString(el,true));
+            }else if(el.isEdge()){
+                console.log(this.actionLabelsToString(el,true));
+            }
+        })
     }
 
-    private stateLabelsToString(el: cytoscape.EdgeSingular) {
+    private stateLabelsToString(el: cytoscape.EdgeSingular, showAll:boolean = false) {
         const visible = this.stateLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
-        const labels = JSON.stringify(el.data("T")).replace(/\"/g, "")
-            .replace(/[\{\}]/g, "")
-            .split(',')
-            .filter(x => visible[x.split(':')[0]] || false );
+        let labels = Object.entries(el.data("T"));
+        if(!showAll)labels = labels.filter(x=> visible[x[0]])
 
-        
-        return labels.length>0 ? "{"+labels.join(',\n ')+"}" : "";
+        return labels.length>0 ? "{"+labels.map(x=>x[0]+":"+JSON.stringify(x[1])).join(',\n ')+"}" : "";
         // return JSON.stringify(el.data("T")).replace(/\"/g, "").split(',').join(',\n ');
     }
 
-    private actionLabelsToString(el:cytoscape.EdgeSingular){
-        const visible = this.actionLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
+    private actionLabelsToString(el:cytoscape.EdgeSingular, showAll:boolean = false){
+        const visible = this.actionLabels.reduce( (acc,x)=>((acc as any)[x.name]=(showAll ? true:x.display),acc),{});
         if(!Object.values(visible).some(x=>x==true) || !Array.isArray(el.data("T")))return "";
         
         const labels = el.data("T").map((x: string) => visible[x] ? x : "_" );
