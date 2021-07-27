@@ -16,7 +16,7 @@ export class StvGraphService {
 
     public stateLabels: Array<any> = []; // list of unique state labels
     public actionLabels: Array<any> = []; // list of unique action labels
-    
+    private graphLayout: Object = {};
 
 
     constructor() { }
@@ -88,8 +88,21 @@ export class StvGraphService {
             }
         ];
 
-        // @todo YK add cytoscape-node-html-label extention for better label render performance
+        console.log(nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id));
         
+        
+        // @todo YK add cytoscape-node-html-label extention for better label render performance
+        this.graphLayout = { // "cytoscape.LayoutOptions | cytoscape.BaseLayoutOptions" type leads to errors
+            name: 'breadthfirst',
+            fit: true,
+            directed: true,
+            padding: 30, 
+            spacingFactor: 1.75, 
+            nodeDimensionsIncludeLabels: true,
+            // roots: this.cy?.nodes(".bgn").map(x=>x.data("id")), // the roots of the trees
+            roots: nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id),
+            animate: false, 
+        };
         // @todo add graph loading mask
         this.cy = cytoscape({
             container: graphContainer,
@@ -97,13 +110,7 @@ export class StvGraphService {
             zoomingEnabled: this.userZoomEnabled,
             panningEnabled: true,
             wheelSensitivity: 0.2,
-            layout: {
-                name: "cose",
-                animate: false,
-                fit: true,
-                padding: 30,
-                nodeDimensionsIncludeLabels:true
-            },
+            layout: <cytoscape.BaseLayoutOptions> this.graphLayout,
             style: styleArr,
         });
 
@@ -219,6 +226,12 @@ export class StvGraphService {
             this.cy.fit();
         }
     }
+
+    reloadLayout(){
+        this.cy?.layout(<cytoscape.BaseLayoutOptions>this.graphLayout).run();
+    }
+
+   
 
 }
 function flatDeep(arr:Array<any>, d = 1): Array<any> {
