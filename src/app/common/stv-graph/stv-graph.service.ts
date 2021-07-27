@@ -1,31 +1,39 @@
 import { Injectable } from "@angular/core";
 import * as state from "src/app/state";
 import * as cytoscape from "cytoscape";
+import { WrappedNodeExpr } from "@angular/compiler";
+import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
+import { concat, Observable, of } from "rxjs";
 
 @Injectable({
-    providedIn: "root",
+    providedIn: "root", // singleton service
 })
 export class StvGraphService {
-    
+
     private cy: cytoscape.Core | null = null;
     private userZoomEnabled: boolean = true;
     private zoomAnimationSpeed: number = 200;
+
+    public stateLabels: Array<any> = []; // list of unique state labels
+    public actionLabels: Array<any> = []; // list of unique action labels
     
-    constructor() {}
+
+
+    constructor() { }
     
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
         // @todo YK (advanced graph rendering) + (use three consts below while initializing graph or call three methods this.update...() after graph initialization)
         console.log(graph);
-        
+
         const nodes: cytoscape.ElementDefinition[] = graph.nodes.map(node => ({
             data: {
                 id: `n_${node.id}`,
                 bgn: node.bgn,
                 T: node.T,
             },
-            classes: node.bgn ? "bgn" : "",
-        }));
-        
+            classes: "withStateLabels " + (node.bgn ? "bgn" : ""),
+        }));        
+         
         const edges: cytoscape.ElementDefinition[] = graph.links.map(link => ({
             data: {
                 id: `e_${link.id}`,
@@ -33,20 +41,32 @@ export class StvGraphService {
                 target: `n_${link.target}`,
                 T: link.T,
             },
+            classes: "withActionLabels"
         }));
-        
+
+        this.computeStateLabelsList([nodes.map(x => Object.keys(x.data.T))])
+        this.computeActionLabelsList(edges.map(x => x.data.T))
+
         // @todo beautify labels
         const styleArr: cytoscape.Stylesheet[] = [
             {
                 selector: ".withStateLabels",
                 style: {
-                    label: (el: cytoscape.EdgeSingular) => JSON.stringify(el.data("T")),
+                    label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                    "text-wrap": "wrap",
+                    "text-valign": "center",
+                    "text-halign": "right",
                 },
             },
             {
                 selector: ".withActionLabels",
                 style: {
-                    label: "data(T)",
+                    // label: "data(T)",
+                    label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
                 },
             },
             {
@@ -54,8 +74,21 @@ export class StvGraphService {
                 style: {
                     "background-color": "blue",
                 },
-            },
+            }, {
+                selector: "edge",
+                style: {
+                    "width": "3px",
+                    "curve-style": "bezier",
+                    "target-arrow-shape": "triangle",
+                }
+            }, {
+                selector: "node",
+                style: {
+                }
+            }
         ];
+
+        // @todo YK add cytoscape-node-html-label extention for better label render performance
         
         // @todo add graph loading mask
         this.cy = cytoscape({
@@ -69,26 +102,70 @@ export class StvGraphService {
                 animate: false,
                 fit: true,
                 padding: 30,
+                nodeDimensionsIncludeLabels:true
             },
             style: styleArr,
         });
-        
+
+        // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
         console.log(this.cy);
     }
-    
+
+    private stateLabelsToString(el: cytoscape.EdgeSingular) {
+        const visible = this.stateLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
+        const labels = JSON.stringify(el.data("T")).replace(/\"/g, "")
+            .replace(/[\{\}]/g, "")
+            .split(',')
+            .filter(x => visible[x.split(':')[0]] || false );
+
+        
+        return labels.length>0 ? "{"+labels.join(',\n ')+"}" : "";
+        // return JSON.stringify(el.data("T")).replace(/\"/g, "").split(',').join(',\n ');
+    }
+
+    private actionLabelsToString(el:cytoscape.EdgeSingular){
+        const visible = this.actionLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
+        // if(visible.some((x: boolean)=>x==true))
+        if(!Object.values(visible).some(x=>x==true))return "";
+        
+        const labels = el.data("T").map((x: string) => visible[x] ? x : "_" );
+        return labels.length>0 ? "("+labels.join(', ')+")" : "";
+    }
+
+    private computeStateLabelsList(arr:Array<any>){
+        this.stateLabels = [...new Set(flatDeep(arr,2))]
+        .map(x => ({"name": x, "display": false}));        
+    }
+
+    private computeActionLabelsList(arr:Array<any>){
+        this.actionLabels = [...new Set(flatDeep(arr,2))]
+            .map(x => ({"name": x, "display": false}));
+    }
+
+    // @todo YK: re-work fix (make it less ugly)
+    reloadStateLabels(): void{
+        this.toggleStateLabels();
+        this.toggleStateLabels();
+    }
+
     toggleStateLabels(): void {
         this.cy?.nodes().toggleClass("withStateLabels");
     }
-    
+
+    reloadActionLabels(): void{
+        this.toggleActionLabels();
+        this.toggleActionLabels();
+    }
+
     toggleActionLabels(): void {
         this.cy?.edges().toggleClass("withActionLabels");
     }
-    
+
     setZoom(step: number, withAnimation: boolean = true): void {
         if (!this.cy) {
             return;
         }
-        
+
         let val = this.cy.zoom() * step;
         if (withAnimation) {
             this.cy.userZoomingEnabled(false);
@@ -109,12 +186,12 @@ export class StvGraphService {
             this.cy.zoom(val);
         }
     }
-    
+
     zoomToFit(withAnimation: boolean = true) {
         if (!this.cy) {
             return;
         }
-        
+
         if (withAnimation) {
             this.cy.userZoomingEnabled(false);
             this.cy.stop().animate(
@@ -136,5 +213,9 @@ export class StvGraphService {
             this.cy.fit();
         }
     }
-    
+
 }
+function flatDeep(arr:Array<any>, d = 1): Array<any> {
+    return d > 0 ? arr.reduce((acc:any, val:any) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
+                 : arr.slice();
+ };

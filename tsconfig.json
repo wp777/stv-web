@@ -18,7 +18,9 @@
         "module": "es2015",
         "lib": [
             "ES6",
-            "dom"
+            "dom",
+            "es2019",
+            "esnext"
         ]
     },
     "angularCompilerOptions": {

@@ -26,8 +26,12 @@ export class StvGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     
     constructor(private appState: state.AppState) {
         const viewSettings = appState.viewSettings;
-        this.viewSettingsSubscriptions.push(viewSettings.showActions$.subscribe(() => this.onShowActionsChanged()));
-        this.viewSettingsSubscriptions.push(viewSettings.showStateLabels$.subscribe(() => this.onShowStateChanged()));
+        this.viewSettingsSubscriptions.push(
+            viewSettings.showActions$.subscribe(() => this.onShowActionsChanged())
+        );
+        this.viewSettingsSubscriptions.push(
+            viewSettings.showStateLabels$.subscribe(() => this.onShowStateChanged())
+        );
     }
     
     ngOnInit(): void { }
@@ -64,15 +68,9 @@ export class StvGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     
     private onShowActionsChanged(): void {
-        if (this.cy && this.isVisible) {
-            this.updateShowActions();
-        }
     }
     
     private onShowStateChanged(): void {
-        if (this.cy && this.isVisible) {
-            this.updateShowStateLabels();
-        }
     }
     
     private onAfterHidden(): void {
@@ -81,26 +79,7 @@ export class StvGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     
     private onAfterShown(): void {
         this.isVisible = true;
-        if (this.cy) {
-            if (this.renderedShowActions !== this.appState.viewSettings.showActions) {
-                this.updateShowActions();
-            }
-            if (this.renderedShowStateLabels !== this.appState.viewSettings.showStateLabels) {
-                this.updateShowStateLabels();
-            }
-        }
     }
     
-    private updateShowActions(): void {
-        // @todo YK show/hide actions
-        console.log("updateShowActions", this.appState.viewSettings.showActions, this.graphContainerRef?.nativeElement);
-        this.renderedShowActions = this.appState.viewSettings.showActions;
-    }
-    
-    private updateShowStateLabels(): void {
-        // @todo YK show/hide state labels
-        console.log("updateShowStateLabels", this.appState.viewSettings.showStateLabels, this.graphContainerRef?.nativeElement);
-        this.renderedShowStateLabels = this.appState.viewSettings.showStateLabels;
-    }
     
 }
