@@ -6,7 +6,7 @@ export class DominoDfsResultModal extends Modal {
         super(
             "Verification result",
             `
-                <div>
+                <div class="main-message">
                     Result strategy <strong>${strategyFound ? "found" : "not found"}</strong>.
                 </div>
             `,

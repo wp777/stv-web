@@ -1,6 +1,7 @@
 import * as Types from "stv-types";
 import { ModelParameters } from "./ModelParameters";
 import { Validation } from "src/app/utils";
+import { ConfigProvider } from "src/app/config.provider";
 
 export class File extends ModelParameters<Types.models.parameters.File> {
     
@@ -16,7 +17,8 @@ export class File extends ModelParameters<Types.models.parameters.File> {
     }
     
     areModelParametersValid(): boolean {
-        return Validation.isNonEmptyString(this.modelString);
+        const config = ConfigProvider.instance.getConfig().fileModel;
+        return Validation.isNonEmptyString(this.modelString) && Validation.isStringLengthInRange(this.modelString, ConfigProvider.UNLIMITED, config.maxFileSizeBytes);
     }
     
 }

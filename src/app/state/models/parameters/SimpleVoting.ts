@@ -1,6 +1,7 @@
 import * as Types from "stv-types";
 import { ModelParameters } from "./ModelParameters";
 import { Validation } from "src/app/utils";
+import { ConfigProvider } from "src/app/config.provider";
 
 export class SimpleVoting extends ModelParameters<Types.models.parameters.SimpleVoting> {
     
@@ -21,8 +22,9 @@ export class SimpleVoting extends ModelParameters<Types.models.parameters.Simple
     }
     
     areModelParametersValid(): boolean {
-        return Validation.isPositiveInteger(this.candidates)
-            && Validation.isPositiveInteger(this.voters);
+        const config = ConfigProvider.instance.getConfig().parameterizedModels.simpleVoting;
+        return Validation.isInteger(this.candidates) && Validation.isIntegerInRange(this.candidates, config.min.candidates, config.max.candidates)
+            && Validation.isInteger(this.voters) && Validation.isIntegerInRange(this.voters, config.min.voters, config.max.voters);
     }
     
 }

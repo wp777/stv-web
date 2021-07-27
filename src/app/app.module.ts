@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -11,6 +11,7 @@ import { StvModeSelectorComponent } from "./stv-mode-selector/stv-mode-selector.
 import { StvSidebarComponent } from "./stv-sidebar/stv-sidebar.component";
 import { StvViewSettingsComponent } from "./stv-view-settings/stv-view-settings.component";
 import { VerificationModule } from "./verification/verification.module";
+import { ConfigProvider, configProviderFactory } from "./config.provider";
 
 @NgModule({
     declarations: [
@@ -28,7 +29,10 @@ import { VerificationModule } from "./verification/verification.module";
         ReductionModule,
         VerificationModule,
     ],
-    providers: [],
+    providers: [
+        ConfigProvider,
+        { provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [ConfigProvider], multi: true },
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
