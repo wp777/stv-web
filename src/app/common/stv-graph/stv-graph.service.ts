@@ -231,7 +231,37 @@ export class StvGraphService {
         this.cy?.layout(<cytoscape.BaseLayoutOptions>this.graphLayout).run();
     }
 
-   
+    changeLayout(_name:string, ...args:any){
+        switch (_name) {
+            case "bfs":
+                this.graphLayout = {
+                    name: 'breadthfirst',
+                    fit: true, // whether to fit the viewport to the graph
+                    directed: true, // whether the tree is directed downwards (or edges can point in any direction if false)
+                    padding: 30, // padding on fit
+                    spacingFactor: 1.75, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+                    nodeDimensionsIncludeLabels: true, // Excludes the label when calculating node bounding boxes for the layout algorithm
+                    roots: this.cy?.nodes(".bgn").map(x=>x.data("id")), // the roots of the trees
+                    animate: false, // whether to transition the node positions
+                  }
+                break;
+            case "grid":
+
+                break;
+            case "cose":
+                this.graphLayout = {
+                    name: _name,
+                    animate: false,
+                    fit: true,
+                    padding: 30,
+                    nodeDimensionsIncludeLabels:true
+                }
+                break;
+        
+            default:
+                break;
+        }
+    }
 
 }
 function flatDeep(arr:Array<any>, d = 1): Array<any> {

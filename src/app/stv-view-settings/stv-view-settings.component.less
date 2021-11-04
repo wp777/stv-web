@@ -1,3 +1,5 @@
+@import "../../vars.less";
+
 .container {
     display: flex;
     flex-direction: column;
@@ -8,6 +10,23 @@
         min-height: 0;
         overflow: auto;
         margin-bottom: 10px;
+    }
+    .checkboxes__block--indented{
+        @verticalLineWidth: 2px;
+        margin-left: calc(10px -(@verticalLineWidth/2));
+        padding-left: calc(10px -(@verticalLineWidth/2));
+        position: relative;
+        
+        &:after {
+            position: absolute;
+            content: "";
+            height: auto;
+            left: 0px;
+            top: 0px;
+            background: @themeColor;
+            width: @verticalLineWidth;
+            bottom: 10px;
+        }
     }
     
     .zoom-controls {
