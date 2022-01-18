@@ -2,6 +2,7 @@ import * as Types from "stv-types";
 import { Injectable } from "@angular/core";
 import * as state from "./state";
 import { ErrorModals } from "./modals/ErrorModals";
+import { saveAs } from "file-saver";
 
 interface SuccessResponse {
     status: "success";
@@ -69,6 +70,28 @@ export interface BisimulationCheckingResult {
 export class ComputeService {
     
     constructor() {}
+
+    async generateAssumption(model: state.models.File): Promise<void> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+        const action: Types.actions.AssumptionModelGeneration = {
+            type: "assumptionModelGeneration",
+            modelParameters: modelParameters,
+        };
+        const result = await this.requestCompute<Types.actions.AssumptionModelGeneration, any>(action);
+        if (result.specs) {
+            for(let i = 0; i< result.specs.length; i++) {
+                saveAs(new File([result["specs"][i]], "assumption" + (i+1) + ".txt", {type: "text/plain;charset=utf-8"}));
+            }
+        }
+
+        if (result.localModels) {
+            model.localModels = result.localModels.map((localModelStr: string) => JSON.parse(localModelStr));
+        }
+
+        if (result.localModelNames) {
+            model.localModelNames = result.localModelNames;
+        }
+    }
     
     async generateModel(model: state.models.SomeModel, reduced: boolean): Promise<void> {
         const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();

@@ -3,6 +3,7 @@ import { APP_INITIALIZER, NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { AssumptionModule } from "./assumption/assumption.module";
 import { BisimulationModule } from "./bisimulation/bisimulation.module";
 import { CommonModule } from "./common/common.module";
 import { ReductionModule } from "./reduction/reduction.module";
@@ -24,6 +25,7 @@ import { ConfigProvider, configProviderFactory } from "./config.provider";
     imports: [
         BrowserModule,
         AppRoutingModule,
+        AssumptionModule,
         BisimulationModule,
         CommonModule,
         ReductionModule,

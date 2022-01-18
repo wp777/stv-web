@@ -1,0 +1,54 @@
+<div class="model-parameters-container first-in-tab-context" data-sidebar-tab-id="generate">
+    <h4>File</h4>
+    <div class="form">
+        <stv-file-input id="from-file--file" class="full-width-input" (fileListChanged)="onFileListChanged($event)"  #modelFileInput></stv-file-input>
+    </div>
+</div>
+
+<div class="actions-container" data-sidebar-tab-id="generate">
+    <div class="row">
+        <button class="theme col-6" (click)="onGenerateClick()" [disabled]="!canGenerate"><span>Generate</span></button>
+    </div>
+</div>
+<div class="actions-container first-in-tab-context" data-sidebar-tab-id="verify">
+    <!-- <h4>Formula to be verified</h4>
+    <code class="formula">{{formula || "(unknown)"}}</code>
+    
+    <h4>Global model verification - approximation</h4>
+    <div class="row">
+        <button class="theme col-6" (click)="onLowerApproximationGlobalClick()" [disabled]="!canVerifyGlobal"><span>Lower approx.</span></button>
+        <button class="theme col-6" (click)="onUpperApproximationGlobalClick()" [disabled]="!canVerifyGlobal"><span>Upper approx.</span></button>
+    </div>
+    
+    <h4>Global model verification - Domino DFS</h4>
+    <div class="row">
+        <stv-select class="domino-dfs-heuristic-selector col-12" [value]="dominoDfsHeuristicGlobal" (valueChanged)="onDominoDfsHeuristicGlobalChanged($event)" #dominoDfsHeuristicGlobalSelector>
+            <div data-value="basic">Basic heuristic</div>
+            <div data-value="control">Control heuristic</div>
+            <div data-value="epistemic">Epistemic heuristic</div>
+            <div data-value="visitedStates">Visited states heuristic</div>
+        </stv-select>
+    </div>
+    <div class="row">
+        <button class="theme col-12" (click)="onDominoDfsGlobalClick()" [disabled]="!canVerifyGlobal"><span>Domino DFS</span></button>
+    </div>
+    
+    <h4>Reduced model verification - approximation</h4>
+    <div class="row">
+        <button class="theme col-6" (click)="onLowerApproximationReducedClick()" [disabled]="!canVerifyReduced"><span>Lower approx.</span></button>
+        <button class="theme col-6" (click)="onUpperApproximationReducedClick()" [disabled]="!canVerifyReduced"><span>Upper approx.</span></button>
+    </div>
+    
+    <h4>Reduced model verification - Domino DFS</h4>
+    <div class="row">
+        <stv-select class="domino-dfs-heuristic-selector col-12" [value]="dominoDfsHeuristicReduced" (valueChanged)="onDominoDfsHeuristicReducedChanged($event)" #dominoDfsHeuristicReducedSelector>
+            <div data-value="basic">Basic heuristic</div>
+            <div data-value="control">Control heuristic</div>
+            <div data-value="epistemic">Epistemic heuristic</div>
+            <div data-value="visitedStates">Visited states heuristic</div>
+        </stv-select>
+    </div>
+    <div class="row">
+        <button class="theme col-12" (click)="onDominoDfsReducedClick()" [disabled]="!canVerifyReduced"><span>Domino DFS</span></button>
+    </div> -->
+</div>
