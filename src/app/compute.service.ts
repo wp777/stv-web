@@ -91,6 +91,10 @@ export class ComputeService {
         if (result.localModelNames) {
             model.localModelNames = result.localModelNames;
         }
+
+        if (result.globalModel) {
+            model.globalModel = JSON.parse(result.globalModel);
+        }
     }
     
     async generateModel(model: state.models.SomeModel, reduced: boolean): Promise<void> {

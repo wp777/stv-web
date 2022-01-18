@@ -29,9 +29,11 @@ export class StvGraphService {
             data: {
                 id: `n_${node.id}`,
                 bgn: node.bgn,
+                win: node.win,
+                str: node.str,
                 T: node.T,
             },
-            classes: "withStateLabels " + (node.bgn ? "bgn" : ""),
+            classes: "withStateLabels " + (node.bgn ? "bgn" : "") + (node.win ? "win" : "") + (node.str ? "str" : ""),
         }));        
          
         const edges: cytoscape.ElementDefinition[] = graph.links.map(link => ({
@@ -39,9 +41,10 @@ export class StvGraphService {
                 id: `e_${link.id}`,
                 source: `n_${link.source}`,
                 target: `n_${link.target}`,
+                str: link.str,
                 T: link.T,
             },
-            classes: "withActionLabels"
+            classes: "withActionLabels " + (link.str ? "str" : ""),
         }));
 
         this.computeStateLabelsList([nodes.map(x => Object.keys(x.data.T))])
@@ -74,7 +77,20 @@ export class StvGraphService {
                 style: {
                     "background-color": "blue",
                 },
-            }, {
+            }, 
+            {
+                selector: ".win",
+                style: {
+                    "background-color": "green",
+                },
+            },
+            {
+                selector: ".str",
+                style: {
+                    "background-color": "purple",
+                },
+            },
+            {
                 selector: "edge",
                 style: {
                     "width": "3px",
