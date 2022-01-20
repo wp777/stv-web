@@ -7,9 +7,7 @@ import { WrappedNodeExpr } from "@angular/compiler";
 import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
 import { concat, Observable, of } from "rxjs";
 
-@Injectable({
-    providedIn: "root", // singleton service
-})
+
 export class StvGraphService {
 
     private cy: cytoscape.Core | null = null;
@@ -208,7 +206,6 @@ export class StvGraphService {
 
     toggleStateLabels(): void {
         this.cy?.nodes().toggleClass("withStateLabels");
-        console.log("Toogle State Labels");
     }
 
     reloadActionLabels(): void{

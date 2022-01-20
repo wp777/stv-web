@@ -10,6 +10,7 @@ import { StvTabsComponent } from "../stv-tabs/stv-tabs.component";
     selector: "stv-model-tabs",
     templateUrl: "./stv-model-tabs.component.html",
     styleUrls: ["./stv-model-tabs.component.less"],
+    providers: [StvGraphService]
 })
 export class StvModelTabsComponent implements OnInit, AfterViewInit {
     
@@ -29,9 +30,10 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
     renderedTabs: { [id: string]: string } = {};
     
     private model: state.models.SomeModel | null = null;
+
+    private graphServices: Array<StvGraphService> = [];
     
-    // @todo fix graphService instance reference to be binded with component
-    constructor(private componentFactoryResolver: ComponentFactoryResolver, private graphService: StvGraphService) {
+    constructor(private appState: state.AppState, private componentFactoryResolver: ComponentFactoryResolver) {
         this.currentTabId = new Subject();
     }
     
@@ -84,6 +86,7 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
         const tabId = event.tabHeader.dataset["tabId"];
         const model = this.model;
         this.currentTabId.next(event.tabHeader.innerText);
+        this.appState.currentGraphService = this.graphServices[Number(event.tabHeader.dataset["tabNum"])];
         if (event.tabContent.classList.contains("not-rendered") && model) {
             let graph: state.models.graph.Graph | null = null;
             if (tabId === StvModelTabsComponent.GLOBAL_MODEL_TAB_ID) {
@@ -97,17 +100,17 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
                 graph = model.localModels ? model.localModels[localModelIndex] : null;
             }
             if (graph) {
-                this.renderGraph(graph, event.tabContent);
+                this.renderGraph(graph, event.tabContent, this.graphServices[Number(event.tabHeader.dataset["tabNum"])]);
             }
         }
     }
     
     // @todo temporary fix
-    renderGraph(graph: state.models.graph.Graph, graphContainer: HTMLElement): void {
+    renderGraph(graph: state.models.graph.Graph, graphContainer: HTMLElement, graphService: StvGraphService): void {
         const graphComponentFactory = this.componentFactoryResolver.resolveComponentFactory(StvGraphComponent);
         const graphComponentRef = this.tabs.contentRef!.createComponent(graphComponentFactory);
         
-        this.graphService.render(graph, graphComponentRef.location.nativeElement.children[0] as HTMLDivElement);
+        graphService.render(graph, graphComponentRef.location.nativeElement.children[0] as HTMLDivElement);
         
         graphContainer.append(graphComponentRef.location.nativeElement);
         graphContainer.classList.remove("not-rendered");
@@ -128,6 +131,8 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
         const header = document.createElement("div");
         header.innerText = tabHeader;
         header.dataset["tabId"] = tabId;
+        header.dataset["tabNum"] = this.graphServices.length.toString();
+        this.graphServices.push(new StvGraphService());
         const content = document.createElement("div");
         content.classList.add("graph-container");
         content.classList.add("not-rendered");
