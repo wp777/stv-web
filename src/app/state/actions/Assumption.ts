@@ -4,34 +4,29 @@ import { Action } from "./Action";
 
 interface AssumptionObservableProperties {
     model: unknown;
-    dominoDfsHeuristicGlobal: unknown;
-    dominoDfsHeuristicReduced: unknown;
+    dominoDfsHeuristic: unknown;
+    modelId: unknown;
 }
 
 export class Assumption extends Action<AssumptionObservableProperties> {
+
+    public _modelId: string = "";
+    get modelId(): string {return this._modelId;}
+    set modelId(modelId: string) {this.setParameter("modelId", modelId); }
     
     protected _model: models.SomeModel = this.createObservedChild(new models.File());
     get model(): models.SomeModel { return this._model; }
     set model(model: models.SomeModel) { this.setParameter("model", model); }
     
-    protected _dominoDfsHeuristicGlobal: Types.actions.DominoDfsHeuristic = "basic";
-    get dominoDfsHeuristicGlobal(): Types.actions.DominoDfsHeuristic { return this._dominoDfsHeuristicGlobal; }
-    set dominoDfsHeuristicGlobal(dominoDfsHeuristicGlobal: Types.actions.DominoDfsHeuristic) { this.setParameter("dominoDfsHeuristicGlobal", dominoDfsHeuristicGlobal); }
-    
-    protected _dominoDfsHeuristicReduced: Types.actions.DominoDfsHeuristic = "basic";
-    get dominoDfsHeuristicReduced(): Types.actions.DominoDfsHeuristic { return this._dominoDfsHeuristicReduced; }
-    set dominoDfsHeuristicReduced(dominoDfsHeuristicReduced: Types.actions.DominoDfsHeuristic) { this.setParameter("dominoDfsHeuristicReduced", dominoDfsHeuristicReduced); }
+    protected _dominoDfsHeuristic: Types.actions.DominoDfsHeuristic = "basic";
+    get dominoDfsHeuristic(): Types.actions.DominoDfsHeuristic { return this._dominoDfsHeuristic; }
+    set dominoDfsHeuristic(dominoDfsHeuristic: Types.actions.DominoDfsHeuristic) { this.setParameter("dominoDfsHeuristic", dominoDfsHeuristic); }
     
     canGenerateModel(): boolean {
         return this.model.parameters.areModelParametersValid();
     }
     
-    canVerifyGlobalModel(): boolean {
+    canVerifyModel(): boolean {
         return this.model.globalModel !== null;
     }
-    
-    canVerifyReducedModel(): boolean {
-        return this.model.reducedModel !== null;
-    }
-    
 }

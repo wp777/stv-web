@@ -24,19 +24,12 @@ export class StvAssumptionSidebarComponent implements OnInit, OnDestroy {
     get canGenerate(): boolean { return this._canGenerate; }
     set canGenerate(canGenerate: boolean) { this._canGenerate = canGenerate; }
     
-    _canVerifyGlobal: boolean = false;
-    get canVerifyGlobal(): boolean { return this._canVerifyGlobal; }
-    set canVerifyGlobal(canVerifyGlobal: boolean) { this._canVerifyGlobal = canVerifyGlobal; }
+    _canVerify: boolean = false;
+    get canVerify(): boolean { return this._canVerify; }
+    set canVerify(canVerify: boolean) { this._canVerify = canVerify; }
     
-    _canVerifyReduced: boolean = false;
-    get canVerifyReduced(): boolean { return this._canVerifyReduced; }
-    set canVerifyReduced(canVerifyReduced: boolean) { this._canVerifyReduced = canVerifyReduced; }
-    
-    @ViewChild("dominoDfsHeuristicGlobalSelector")
-    dominoDfsHeuristicGlobalSelectorRef?: StvSelectComponent;
-    
-    @ViewChild("dominoDfsHeuristicReducedSelector")
-    dominoDfsHeuristicReducedSelectorRef?: StvSelectComponent;
+    @ViewChild("dominoDfsHeuristicSelector")
+    dominoDfsHeuristicSelectorRef?: StvSelectComponent;
     
     @ViewChild("modelFileInput")
     modelFileInputRef?: ElementRef<StvFileInputComponent>;
@@ -47,8 +40,9 @@ export class StvAssumptionSidebarComponent implements OnInit, OnDestroy {
     
     formula: string | null = null;
     modelType: string = "";
-    dominoDfsHeuristicGlobal: Types.actions.DominoDfsHeuristic = "basic";
-    dominoDfsHeuristicReduced: Types.actions.DominoDfsHeuristic = "basic";
+    dominoDfsHeuristic: Types.actions.DominoDfsHeuristic = "basic";
+    statesCount: number | null = null;
+    transitionsCount: number | null = null;
     
     routerSubscription: Subscription;
     appStateSubscription: Subscription;
@@ -61,8 +55,7 @@ export class StvAssumptionSidebarComponent implements OnInit, OnDestroy {
         this.maxModelFileSizeBytes = config.fileModel.maxFileSizeBytes === ConfigProvider.UNLIMITED ? "" : config.fileModel.maxFileSizeBytes;
         
         this.appState.action = new state.actions.Assumption();
-        this.dominoDfsHeuristicGlobal = this.appState.action.dominoDfsHeuristicGlobal;
-        this.dominoDfsHeuristicReduced = this.appState.action.dominoDfsHeuristicReduced;
+        this.dominoDfsHeuristic = this.appState.action.dominoDfsHeuristic;
         
         this.routerSubscription = router.events.subscribe(value => {
             if (value instanceof NavigationEnd) {
@@ -96,63 +89,56 @@ export class StvAssumptionSidebarComponent implements OnInit, OnDestroy {
         await this.computeService.generateAssumption(this.getAssumptionModel());
     }
     
-    // async onLowerApproximationGlobalClick(): Promise<void> {
-    //     await this.verifyModelUsingLowerApproximation(false);
-    // }
-    
-    // async onLowerApproximationReducedClick(): Promise<void> {
-    //     await this.verifyModelUsingLowerApproximation(true);
-    // }
-    
-    // async verifyModelUsingLowerApproximation(reduced: boolean): Promise<void> {
-    //     const result = await this.computeService.verifyModelUsingLowerApproximation(this.getReductionModel(), reduced);
-    //     ApproximationModals.showForResult(result);
-    // }
-    
-    // async onUpperApproximationGlobalClick(): Promise<void> {
-    //     await this.verifyModelUsingUpperApproximation(false);
-    // }
-    
-    // async onUpperApproximationReducedClick(): Promise<void> {
-    //     await this.verifyModelUsingUpperApproximation(true);
-    // }
-    
-    // async verifyModelUsingUpperApproximation(reduced: boolean): Promise<void> {
-    //     const result = await this.computeService.verifyModelUsingUpperApproximation(this.getReductionModel(), reduced);
-    //     ApproximationModals.showForResult(result);
-    // }
-    
-    // async onDominoDfsGlobalClick(): Promise<void> {
-    //     await this.verifyModelUsingDominoDfs(false);
-    // }
-    
-    // async onDominoDfsReducedClick(): Promise<void> {
-    //     await this.verifyModelUsingDominoDfs(true);
-    // }
-    
-    // async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
-    //     const heuristic: Types.actions.DominoDfsHeuristic = reduced ? this.dominoDfsHeuristicReduced : this.dominoDfsHeuristicGlobal;
-    //     const result = await this.computeService.verifyModelUsingDominoDfs(this.getReductionModel(), reduced, heuristic);
-    //     DominoDfsModals.showForResult(result);
-    // }
-    
-    onDominoDfsHeuristicGlobalChanged(heuristic: string): void {
-        const reductionState = this.getAssumptionState();
-        reductionState.dominoDfsHeuristicGlobal = heuristic as Types.actions.DominoDfsHeuristic;
-        this.dominoDfsHeuristicGlobal = reductionState.dominoDfsHeuristicGlobal;
+    async onLowerApproximationClick(): Promise<void> {
+        const result = await this.computeService.verifyAssumptionUsingLowerApproximation(this.getAssumptionModel(), this.getAssumptionState().modelId);
+        ApproximationModals.showForResult(result);
     }
     
-    onDominoDfsHeuristicReducedChanged(heuristic: string): void {
+    async onUpperApproximationClick(): Promise<void> {
+        const result = await this.computeService.verifyAssumptionUsingUpperApproximation(this.getAssumptionModel(), this.getAssumptionState().modelId);
+        ApproximationModals.showForResult(result);
+    }
+    
+    async onDominoDfsClick(): Promise<void> {
+        await this.verifyModelUsingDominoDfs(false);
+    }
+    
+    async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
+        const heuristic: Types.actions.DominoDfsHeuristic = this.dominoDfsHeuristic;
+        const result = await this.computeService.verifyModelUsingDominoDfs(this.getAssumptionModel(), reduced, heuristic);
+        DominoDfsModals.showForResult(result);
+    }
+    
+    onDominoDfsHeuristicChanged(heuristic: string): void {
         const reductionState = this.getAssumptionState();
-        reductionState.dominoDfsHeuristicReduced = heuristic as Types.actions.DominoDfsHeuristic;
-        this.dominoDfsHeuristicReduced = reductionState.dominoDfsHeuristicReduced;
+        reductionState.dominoDfsHeuristic = heuristic as Types.actions.DominoDfsHeuristic;
+        this.dominoDfsHeuristic = reductionState.dominoDfsHeuristic;
     }
     
     onAppStateChanged(): void {
         this.canGenerate = this.getAssumptionState().canGenerateModel();
-        this.canVerifyGlobal = this.getAssumptionState().canVerifyGlobalModel();
-        this.canVerifyReduced = this.getAssumptionState().canVerifyReducedModel();
-        // this.formula = this.getReductionModel().formula;
+        this.canVerify = this.getAssumptionState().canVerifyModel();
+
+        let modelNames = this.getAssumptionModel().localModelNames || [];
+        let formulas = this.getAssumptionModel().formulas || [];
+        let localModels = this.getAssumptionModel().localModels || [];
+        let ok = false;
+        
+        for(let i = 0; i < modelNames.length; i++) {
+            if(this.getAssumptionState().modelId == modelNames[i]) {
+                this.formula = formulas[i];
+                this.statesCount = localModels[i].nodes.length;
+                this.transitionsCount = localModels[i].links.length;
+                ok = true;
+                break;
+            }
+        }
+
+        if(!ok) {
+            this.formula = formulas[formulas.length - 1];
+            this.statesCount = this.getAssumptionModel().globalModel?.nodes.length || null;
+            this.transitionsCount = this.getAssumptionModel().globalModel?.links.length || null;
+        }
     }
     
     async onFileListChanged(fileList: FileList): Promise<void> {

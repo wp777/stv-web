@@ -79,9 +79,11 @@ export class ComputeService {
         };
         const result = await this.requestCompute<Types.actions.AssumptionModelGeneration, any>(action);
         if (result.specs) {
-            for(let i = 0; i< result.specs.length; i++) {
-                saveAs(new File([result["specs"][i]], "assumption" + (i+1) + ".txt", {type: "text/plain;charset=utf-8"}));
+            for(let i = 0; i< result.specs.length - 1; i++) {
+                saveAs(new File([result["specs"][i]], result.localModelNames[i] + ".txt", {type: "text/plain;charset=utf-8"}));
             }
+
+            saveAs(new File([result["specs"][result.specs.length - 1]], "Global Model.txt", {type: "text/plain;charset=utf-8"}));
         }
 
         if (result.localModels) {
@@ -94,6 +96,10 @@ export class ComputeService {
 
         if (result.globalModel) {
             model.globalModel = JSON.parse(result.globalModel);
+        }
+
+        if(result.formulas) {
+            model.formulas = result.formulas;
         }
     }
     
@@ -124,6 +130,60 @@ export class ComputeService {
             if (result.localModelNames) {
                 model.localModelNames = result.localModelNames;
             }
+        }
+    }
+
+    async verifyAssumptionUsingLowerApproximation(model: state.models.SomeModel, modelName: string): Promise<ApproximationResult> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+        const action: Types.actions.LowerApproximationAssumption = {
+            type: "lowerApproximationAssumption",
+            modelParameters: modelParameters,
+            modelName: modelName,
+        };
+        const rawResult = await this.requestCompute<Types.actions.LowerApproximationAssumption, RawApproximationResult>(action);
+        if (rawResult[0] === "1") {
+            return <ApproximationHoldsResult>{
+                type: "approximationHolds",
+                numStatesWhereFormulaHolds: rawResult[1],
+                strategyObjectiveString: rawResult[2],
+            };
+        }
+        else if (rawResult[0] === "0") {
+            return <ApproximationDoesNotHaveToHoldResult>{
+                type: "approximationDoesNotHaveToHold",
+                numStatesWhereFormulaHolds: rawResult[1],
+                strategyObjectiveString: rawResult[2],
+            };
+        }
+        else {
+            throw new Error("Unexpected approximation result");
+        }
+    }
+
+    async verifyAssumptionUsingUpperApproximation(model: state.models.SomeModel, modelName: string): Promise<ApproximationResult> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+        const action: Types.actions.UpperApproximationAssumption = {
+            type: "upperApproximationAssumption",
+            modelParameters: modelParameters,
+            modelName: modelName,
+        };
+        const rawResult = await this.requestCompute<Types.actions.UpperApproximationAssumption, RawApproximationResult>(action);
+        if (rawResult[0] === "1") {
+            return <ApproximationMightHoldResult>{
+                type: "approximationMightHold",
+                numStatesWhereFormulaMightHold: rawResult[1],
+                strategyObjectiveString: rawResult[2],
+            };
+        }
+        else if (rawResult[0] === "0") {
+            return <ApproximationDoesNotHoldResult>{
+                type: "approximationDoesNotHold",
+                numStatesWhereFormulaMightHold: rawResult[1],
+                strategyObjectiveString: rawResult[2],
+            };
+        }
+        else {
+            throw new Error("Unexpected approximation result");
         }
     }
     

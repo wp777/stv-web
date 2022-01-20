@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import * as state from "src/app/state";
 import * as cytoscape from "cytoscape";
+import * as popper from "cytoscape-popper";
+import tippy, { Tippy } from "tippy.js";
 import { WrappedNodeExpr } from "@angular/compiler";
 import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
 import { concat, Observable, of } from "rxjs";
@@ -23,8 +25,6 @@ export class StvGraphService {
     
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
         // @todo YK (advanced graph rendering) + (use three consts below while initializing graph or call three methods this.update...() after graph initialization)
-        console.log(graph);
-
         const nodes: cytoscape.ElementDefinition[] = graph.nodes.map(node => ({
             data: {
                 id: `n_${node.id}`,
@@ -32,6 +32,7 @@ export class StvGraphService {
                 win: node.win,
                 str: node.str,
                 T: node.T,
+                // tippy: this.makePopper(node),
             },
             classes: "withStateLabels " + (node.bgn ? "bgn" : "") + (node.win ? "win" : "") + (node.str ? "str" : ""),
         }));        
@@ -73,15 +74,21 @@ export class StvGraphService {
                 },
             },
             {
+                selector: "node",
+                style: {
+                    "background-color": "#36454f",
+                }
+            },
+            {
                 selector: ".bgn",
                 style: {
-                    "background-color": "blue",
+                    "background-color": "#26619c",
                 },
             }, 
             {
                 selector: ".win",
                 style: {
-                    "background-color": "green",
+                    "background-color": "#4cbb17",
                 },
             },
             {
@@ -97,14 +104,10 @@ export class StvGraphService {
                     "curve-style": "bezier",
                     "target-arrow-shape": "triangle",
                 }
-            }, {
-                selector: "node",
-                style: {
-                }
-            }
+            },
         ];
 
-        console.log(nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id));
+        // console.log(nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id));
         
         
         // @todo YK add cytoscape-node-html-label extention for better label render performance
@@ -131,10 +134,10 @@ export class StvGraphService {
         });
 
         // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
-        console.log(this.cy);
+        // console.log(this.cy);
         this.cy.elements().on('click', (e) =>{
             let el = e.target;
-            console.log(e.target);
+            // console.log(e.target);
             
             if(el.isNode()){
                 console.log(this.stateLabelsToString(el,true));
@@ -142,7 +145,33 @@ export class StvGraphService {
                 console.log(this.actionLabelsToString(el,true));
             }
         })
+
+        // this.cy.elements().unbind('mouseover');
+        // this.cy.elements().bind('mouseover', (event) => event.target.tippy.show());
+
+        // this.cy.elements().unbind('mouseout');
+        // this.cy.elements().bind('mouseout', (event) => event.target.tippy.hide());
     }
+
+    // private makePopper(ele: state.models.graph.Node) {
+    //     let ref = ele.popperRef(); // used only for positioning
+    //     let dummyDomEle = document.createElement('div');
+
+        
+    //     ele.tippy = tippy(dummyDomEle, { // tippy options:
+    //         getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
+    //         trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
+   
+    //         content: () => {
+    //             let content = document.createElement('div');
+    //             let labels = Object.entries(ele.T);
+        
+    //             content.innerHTML = labels.length>0 ? "{"+labels.map(x=>x[0]+":"+JSON.stringify(x[1])).join(',\n ')+"}" : "";
+        
+    //             return content;
+    //         },
+    //     });
+    // }
 
     private stateLabelsToString(el: cytoscape.EdgeSingular, showAll:boolean = false) {
         const visible = this.stateLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
@@ -179,6 +208,7 @@ export class StvGraphService {
 
     toggleStateLabels(): void {
         this.cy?.nodes().toggleClass("withStateLabels");
+        console.log("Toogle State Labels");
     }
 
     reloadActionLabels(): void{

@@ -38,6 +38,11 @@ export class StvAssumptionMainComponent implements OnInit, OnDestroy, AfterViewI
     onAppStateChanged(): void {
         const model = this.getAssumptionModel();
         this.modelTabs.setModel(model);
+        this.modelTabs.currentTabId.subscribe(next => this.onTabChange(next));
+    }
+
+    onTabChange(modelId: string) {
+        this.getAssumptionState().modelId = modelId;
     }
     
     private getAssumptionState(): state.actions.Assumption {

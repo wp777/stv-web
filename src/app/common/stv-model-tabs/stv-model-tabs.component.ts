@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Observable, Subject } from "rxjs";
 import * as state from "src/app/state";
 import { StvGraphComponent } from "../stv-graph/stv-graph.component";
 import { StvGraphService } from "../stv-graph/stv-graph.service"
@@ -15,6 +16,8 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
     static readonly GLOBAL_MODEL_TAB_ID: string = "global";
     static readonly REDUCED_MODEL_TAB_ID: string = "reduced";
     static readonly LOCAL_MODEL_TAB_ID_PREFIX: string = "local-";
+
+    public currentTabId: Subject<string>;
     
     @ViewChild("tabs")
     tabsRef?: ElementRef<StvTabsComponent>;
@@ -29,6 +32,7 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
     
     // @todo fix graphService instance reference to be binded with component
     constructor(private componentFactoryResolver: ComponentFactoryResolver, private graphService: StvGraphService) {
+        this.currentTabId = new Subject();
     }
     
     ngOnInit(): void { }
@@ -79,6 +83,7 @@ export class StvModelTabsComponent implements OnInit, AfterViewInit {
     onTabActivated(event: { tabHeader: HTMLElement, tabContent: HTMLElement }): void {
         const tabId = event.tabHeader.dataset["tabId"];
         const model = this.model;
+        this.currentTabId.next(event.tabHeader.innerText);
         if (event.tabContent.classList.contains("not-rendered") && model) {
             let graph: state.models.graph.Graph | null = null;
             if (tabId === StvModelTabsComponent.GLOBAL_MODEL_TAB_ID) {

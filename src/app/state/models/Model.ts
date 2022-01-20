@@ -9,6 +9,7 @@ interface ModelObservableProperties {
     reducedModel: unknown;
     localModels: unknown;
     localModelNames: unknown;
+    formulas: unknown;
 }
 
 export abstract class Model<T extends parameters.SomeParameters> extends ObservableState<ModelObservableProperties> {
@@ -18,6 +19,10 @@ export abstract class Model<T extends parameters.SomeParameters> extends Observa
     protected _parameters: T;
     get parameters(): T { return this._parameters; }
     set parameters(parameters: T) { this.setParameter("parameters", parameters); }
+
+    protected _formulas: string[] | null = null;
+    get formulas(): string[] | null {return this._formulas; }
+    set formulas(formulas: string[] | null) { this.setParameter("formulas", formulas); }
     
     protected _formula: string | null = (this.constructor as any).DEFAULT_FORMULA;
     get formula(): string | null { return this._formula; }
