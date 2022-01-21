@@ -30,7 +30,6 @@ export class StvGraphService {
                 win: node.win,
                 str: node.str,
                 T: node.T,
-                // tippy: this.makePopper(node),
             },
             classes: "withStateLabels " + (node.bgn ? "bgn" : "") + (node.win ? "win" : "") + (node.str ? "str" : ""),
         }));        
@@ -65,7 +64,6 @@ export class StvGraphService {
             {
                 selector: ".withActionLabels",
                 style: {
-                    // label: "data(T)",
                     label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
                     "text-outline-color": "white",
                     "text-outline-width": "1px",
@@ -90,18 +88,19 @@ export class StvGraphService {
                 },
             },
             {
-                selector: ".str",
-                style: {
-                    "background-color": "purple",
-                },
-            },
-            {
                 selector: "edge",
                 style: {
                     "width": "3px",
                     "curve-style": "bezier",
                     "target-arrow-shape": "triangle",
                 }
+            },
+            {
+                selector: ".str",
+                style: {
+                    "background-color": "red",
+                    "line-color": "red",
+                },
             },
         ];
 
@@ -143,33 +142,7 @@ export class StvGraphService {
                 console.log(this.actionLabelsToString(el,true));
             }
         })
-
-        // this.cy.elements().unbind('mouseover');
-        // this.cy.elements().bind('mouseover', (event) => event.target.tippy.show());
-
-        // this.cy.elements().unbind('mouseout');
-        // this.cy.elements().bind('mouseout', (event) => event.target.tippy.hide());
     }
-
-    // private makePopper(ele: state.models.graph.Node) {
-    //     let ref = ele.popperRef(); // used only for positioning
-    //     let dummyDomEle = document.createElement('div');
-
-        
-    //     ele.tippy = tippy(dummyDomEle, { // tippy options:
-    //         getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
-    //         trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
-   
-    //         content: () => {
-    //             let content = document.createElement('div');
-    //             let labels = Object.entries(ele.T);
-        
-    //             content.innerHTML = labels.length>0 ? "{"+labels.map(x=>x[0]+":"+JSON.stringify(x[1])).join(',\n ')+"}" : "";
-        
-    //             return content;
-    //         },
-    //     });
-    // }
 
     private stateLabelsToString(el: cytoscape.EdgeSingular, showAll:boolean = false) {
         const visible = this.stateLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
@@ -304,6 +277,27 @@ export class StvGraphService {
             default:
                 break;
         }
+    }
+
+    clearStrategy() {
+        this.cy?.nodes().removeClass("str");
+        this.cy?.edges().removeClass("str");
+    }
+
+    showStrategy(strategyModel: state.models.graph.Graph) {
+        this.clearStrategy();
+
+        strategyModel.nodes.forEach(node => {
+            if(node.str) {
+                this.cy?.$id(`n_${node.id}`).addClass("str");
+            }
+        });
+
+        strategyModel.links.forEach(link => {
+            if(link.str) {
+                this.cy?.$id(`e_${link.id}`).addClass("str");
+            }
+        });
     }
 
 }

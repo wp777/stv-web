@@ -92,21 +92,28 @@ export class StvAssumptionSidebarComponent implements OnInit, OnDestroy {
     async onLowerApproximationClick(): Promise<void> {
         const result = await this.computeService.verifyAssumptionUsingLowerApproximation(this.getAssumptionModel(), this.getAssumptionState().modelId);
         ApproximationModals.showForResult(result);
+        if(result.type == "approximationHolds" || result.type=="approximationMightHold") {
+            this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+        } else {
+            this.appState.currentGraphService?.clearStrategy();
+        }
     }
     
     async onUpperApproximationClick(): Promise<void> {
         const result = await this.computeService.verifyAssumptionUsingUpperApproximation(this.getAssumptionModel(), this.getAssumptionState().modelId);
         ApproximationModals.showForResult(result);
+        if(result.type == "approximationHolds" || result.type=="approximationMightHold") {
+            this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+        } else {
+            this.appState.currentGraphService?.clearStrategy();
+        }
     }
     
     async onDominoDfsClick(): Promise<void> {
-        await this.verifyModelUsingDominoDfs(false);
-    }
-    
-    async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
         const heuristic: Types.actions.DominoDfsHeuristic = this.dominoDfsHeuristic;
-        const result = await this.computeService.verifyModelUsingDominoDfs(this.getAssumptionModel(), reduced, heuristic);
+        const result = await this.computeService.verifyAssumptionUsingDominoDfs(this.getAssumptionModel(), this.getAssumptionState().modelId, heuristic);
         DominoDfsModals.showForResult(result);
+        this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
     }
     
     onDominoDfsHeuristicChanged(heuristic: string): void {

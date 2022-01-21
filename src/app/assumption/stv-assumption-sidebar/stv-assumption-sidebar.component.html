@@ -36,6 +36,12 @@
 <div class="actions-container first-in-tab-context" data-sidebar-tab-id="details">
     <h4>Model Details</h4>
 
-    <p>Number of states: {{statesCount || "(unknown)"}}</p>
-    <p>Number of transitions: {{transitionsCount || "(unknown)"}}</p>
+    <div class="row">
+        <div class="col-8">Number of states:</div>
+        <div class="col-4">{{statesCount || "(unknown)"}}</div>
+    </div>
+    <div class="row">
+        <div class="col-8">Number of transitions:</div>
+        <div class="col-4">{{transitionsCount || "(unknown)"}}</div>
+    </div>
 </div>

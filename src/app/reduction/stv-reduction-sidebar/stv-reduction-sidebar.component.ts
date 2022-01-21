@@ -115,6 +115,11 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     async verifyModelUsingLowerApproximation(reduced: boolean): Promise<void> {
         const result = await this.computeService.verifyModelUsingLowerApproximation(this.getReductionModel(), reduced);
         ApproximationModals.showForResult(result);
+        if(result.type == "approximationHolds" || result.type=="approximationMightHold") {
+            this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+        } else {
+            this.appState.currentGraphService?.clearStrategy();
+        }
     }
     
     async onUpperApproximationGlobalClick(): Promise<void> {
@@ -128,6 +133,11 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
     async verifyModelUsingUpperApproximation(reduced: boolean): Promise<void> {
         const result = await this.computeService.verifyModelUsingUpperApproximation(this.getReductionModel(), reduced);
         ApproximationModals.showForResult(result);
+        if(result.type == "approximationHolds" || result.type=="approximationMightHold") {
+            this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+        } else {
+            this.appState.currentGraphService?.clearStrategy();
+        }
     }
     
     async onDominoDfsGlobalClick(): Promise<void> {
@@ -142,6 +152,7 @@ export class StvReductionSidebarComponent implements OnInit, OnDestroy {
         const heuristic: Types.actions.DominoDfsHeuristic = reduced ? this.dominoDfsHeuristicReduced : this.dominoDfsHeuristicGlobal;
         const result = await this.computeService.verifyModelUsingDominoDfs(this.getReductionModel(), reduced, heuristic);
         DominoDfsModals.showForResult(result);
+        this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
     }
     
     onDominoDfsHeuristicGlobalChanged(heuristic: string): void {

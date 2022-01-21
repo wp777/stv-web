@@ -44,12 +44,14 @@ export interface ApproximationHoldsResult {
     type: "approximationHolds";
     numStatesWhereFormulaHolds: number;
     strategyObjectiveString: string;
+    strategyObjectiveModel: state.models.graph.Graph;
 }
 
 export interface ApproximationMightHoldResult {
     type: "approximationMightHold";
     numStatesWhereFormulaMightHold: number;
     strategyObjectiveString: string;
+    strategyObjectiveModel: state.models.graph.Graph;
 }
 
 export type ApproximationResult = ApproximationDoesNotHaveToHoldResult | ApproximationDoesNotHoldResult | ApproximationHoldsResult | ApproximationMightHoldResult;
@@ -57,6 +59,7 @@ export type ApproximationResult = ApproximationDoesNotHaveToHoldResult | Approxi
 export interface DominoDfsResult {
     strategyFound: boolean;
     strategyObjectiveString: string;
+    strategyObjectiveModel: state.models.graph.Graph;
 }
 
 export interface BisimulationCheckingResult {
@@ -146,6 +149,7 @@ export class ComputeService {
                 type: "approximationHolds",
                 numStatesWhereFormulaHolds: rawResult[1],
                 strategyObjectiveString: rawResult[2],
+                strategyObjectiveModel: JSON.parse(rawResult[2]),
             };
         }
         else if (rawResult[0] === "0") {
@@ -173,6 +177,7 @@ export class ComputeService {
                 type: "approximationMightHold",
                 numStatesWhereFormulaMightHold: rawResult[1],
                 strategyObjectiveString: rawResult[2],
+                strategyObjectiveModel: JSON.parse(rawResult[2]),
             };
         }
         else if (rawResult[0] === "0") {
@@ -200,6 +205,7 @@ export class ComputeService {
                 type: "approximationHolds",
                 numStatesWhereFormulaHolds: rawResult[1],
                 strategyObjectiveString: rawResult[2],
+                strategyObjectiveModel: JSON.parse(rawResult[2]),
             };
         }
         else if (rawResult[0] === "0") {
@@ -227,6 +233,7 @@ export class ComputeService {
                 type: "approximationMightHold",
                 numStatesWhereFormulaMightHold: rawResult[1],
                 strategyObjectiveString: rawResult[2],
+                strategyObjectiveModel: JSON.parse(rawResult[2]),
             };
         }
         else if (rawResult[0] === "0") {
@@ -239,6 +246,18 @@ export class ComputeService {
         else {
             throw new Error("Unexpected approximation result");
         }
+    }
+
+    async verifyAssumptionUsingDominoDfs(model: state.models.SomeModel, modelName: string, heuristic: Types.actions.DominoDfsHeuristic): Promise<DominoDfsResult> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+        const action: Types.actions.DominoAssumption = {
+            type: "dominoAssumption",
+            modelParameters: modelParameters,
+            modelName: modelName,
+            heuristic: heuristic,
+        };
+        const rawResult = await this.requestCompute<Types.actions.DominoAssumption, RawDominoDfsResult>(action);
+        return this.convertRawResultToDominoDfsResult(rawResult);
     }
     
     async verifyModelUsingDominoDfs(model: state.models.SomeModel, reduced: boolean, heuristic: Types.actions.DominoDfsHeuristic): Promise<DominoDfsResult> {
@@ -274,6 +293,7 @@ export class ComputeService {
         return {
             strategyFound: result[0] === "1",
             strategyObjectiveString: result[1],
+            strategyObjectiveModel: JSON.parse(result[1]),
         };
     }
     

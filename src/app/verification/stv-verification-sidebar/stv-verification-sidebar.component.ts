@@ -77,6 +77,11 @@ export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     async verifyModelUsingLowerApproximation(reduced: boolean): Promise<void> {
         const result = await this.computeService.verifyModelUsingLowerApproximation(this.getVerificationModel(), reduced);
         ApproximationModals.showForResult(result);
+        if(result.type == "approximationHolds" || result.type=="approximationMightHold") {
+            this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+        } else {
+            this.appState.currentGraphService?.clearStrategy();
+        }
     }
     
     async onUpperApproximationClick(): Promise<void> {
@@ -86,6 +91,11 @@ export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     async verifyModelUsingUpperApproximation(reduced: boolean): Promise<void> {
         const result = await this.computeService.verifyModelUsingUpperApproximation(this.getVerificationModel(), reduced);
         ApproximationModals.showForResult(result);
+        if(result.type == "approximationHolds" || result.type=="approximationMightHold") {
+            this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+        } else {
+            this.appState.currentGraphService?.clearStrategy();
+        }
     }
     
     async onDominoDfsClick(): Promise<void> {
@@ -95,6 +105,7 @@ export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
         const result = await this.computeService.verifyModelUsingDominoDfs(this.getVerificationModel(), reduced, this.dominoDfsHeuristic);
         DominoDfsModals.showForResult(result);
+        this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
     }
     
     onDominoDfsHeuristicChanged(heuristic: string): void {
