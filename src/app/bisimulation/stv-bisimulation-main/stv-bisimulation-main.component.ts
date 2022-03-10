@@ -9,6 +9,7 @@ import * as state from "src/app/state";
     selector: "stv-bisimulation-main",
     templateUrl: "./stv-bisimulation-main.component.html",
     styleUrls: ["./stv-bisimulation-main.component.less"],
+    providers: [StvGraphService]
 })
 export class StvBisimulationMainComponent implements OnInit {
     
@@ -27,8 +28,10 @@ export class StvBisimulationMainComponent implements OnInit {
     }
     
     appStateSubscription: Subscription;
+
+    private graphService: StvGraphService = new StvGraphService();
     
-    constructor(private appState: state.AppState, private componentFactoryResolver: ComponentFactoryResolver, private graphService: StvGraphService) {
+    constructor(private appState: state.AppState, private componentFactoryResolver: ComponentFactoryResolver) {
         this.appStateSubscription = appState.state$
             .pipe(debounce(() => interval(10)))
             .subscribe(() => this.onAppStateChanged());
