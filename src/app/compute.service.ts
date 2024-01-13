@@ -323,6 +323,7 @@ export class ComputeService {
             console.error(responseObject.error);
             throw new Error("Server error");
         }
+        console.log(responseObject.data);
         return JSON.parse(responseObject.data);
     }
     
