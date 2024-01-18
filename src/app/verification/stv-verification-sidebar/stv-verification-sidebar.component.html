@@ -18,23 +18,23 @@
     <h4>Formula to be verified</h4>
     <code class="formula">{{formula || "(unknown)"}}</code>
     
-    <h4>Verification - approximation</h4>
+    <!-- <h4>Verification - approximation</h4>
     <div class="row">
         <button class="theme col-6" (click)="onLowerApproximationClick()" [disabled]="!canVerify"><span>Lower approx.</span></button>
         <button class="theme col-6" (click)="onUpperApproximationClick()" [disabled]="!canVerify"><span>Upper approx.</span></button>
-    </div>
+    </div> -->
     
-    <h4>Verification - Domino DFS</h4>
+    <h4>Verification - DFS Strategy Synthesis</h4>
 
-    <div class="row">
+    <!-- <div class="row">
         <stv-select class="domino-dfs-heuristic-selector col-12" [value]="dominoDfsHeuristic" (valueChanged)="onDominoDfsHeuristicChanged($event)" #dominoDfsHeuristicSelector>
             <div data-value="basic">Basic heuristic</div>
             <div data-value="control">Control heuristic</div>
             <div data-value="epistemic">Epistemic heuristic</div>
             <div data-value="visitedStates">Visited states heuristic</div>
         </stv-select>
-    </div>
+    </div> -->
     <div class="row">
-        <button class="theme col-12" (click)="onDominoDfsClick()" [disabled]="!canVerify"><span>Domino DFS</span></button>
+        <button class="theme col-12" (click)="onDominoDfsClick()" [disabled]="!canVerify"><span>DFS Strategy Synthesis</span></button>
     </div>
 </div>
