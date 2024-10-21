@@ -100,6 +100,7 @@ export class StvGraphService {
             {
                 selector: ".str",
                 style: {
+                    "width": "4px",
                     "background-color": "#32cd32", // LimeGreen
                     "line-color": "#32cd32", // LimeGreen
                     "target-arrow-color": "#32cd32", // LimeGreen
