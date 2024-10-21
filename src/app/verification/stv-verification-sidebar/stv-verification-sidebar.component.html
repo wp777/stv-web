@@ -13,6 +13,9 @@
     <div class="row">
         <button class="theme col-12" (click)="onGenerateClick()" [disabled]="!canGenerate"><span>Generate</span></button>
     </div>
+    <div class="row">
+        <button class="theme col-12" (click)="onOnTheFlyClick()" [disabled]="!canGenerate"><span>On-The-Fly</span></button>
+    </div>
 </div>
 <div class="actions-container first-in-tab-context" data-sidebar-tab-id="verify">
     <h4>Formula to be verified</h4>

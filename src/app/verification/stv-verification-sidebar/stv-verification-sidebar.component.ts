@@ -65,9 +65,17 @@ export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     async onGenerateClick(): Promise<void> {
         await this.generateModel(false);
     }
-    
+
     async generateModel(reduced: boolean): Promise<void> {
         await this.computeService.generateModel(this.getVerificationModel(), reduced);
+    }
+
+    async onOnTheFlyClick(): Promise<void> {
+        await this.generateOnTheFlyModel();
+    }
+
+    async generateOnTheFlyModel(): Promise<void> {
+        await this.computeService.generateOnTheFlyModel(this.getVerificationModel());
     }
     
     async onLowerApproximationClick(): Promise<void> {

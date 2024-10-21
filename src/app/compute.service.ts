@@ -105,7 +105,7 @@ export class ComputeService {
             model.formulas = result.formulas;
         }
     }
-    
+
     async generateModel(model: state.models.SomeModel, reduced: boolean): Promise<void> {
         const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
         const action: Types.actions.ModelGeneration = {
@@ -126,6 +126,32 @@ export class ComputeService {
             }
             if (result.reducedModel) {
                 model.reducedModel = JSON.parse(result.reducedModel);
+            }
+            if (result.localModels) {
+                model.localModels = result.localModels.map((localModelStr: string) => JSON.parse(localModelStr));
+            }
+            if (result.localModelNames) {
+                model.localModelNames = result.localModelNames;
+            }
+        }
+    }
+    
+    async generateOnTheFlyModel(model: state.models.SomeModel): Promise<void> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+        const action: Types.actions.OnTheFlyModelGeneration = {
+            type: "onTheFlyModelGeneration",
+            modelParameters: modelParameters,
+        };
+        const result = await this.requestCompute<Types.actions.OnTheFlyModelGeneration, any>(action);
+        if (result.nodes && result.links) {
+            model.globalModel = result;
+        }
+        else {
+            if (result.formula) {
+                model.formula = result.formula;
+            }
+            if (result.globalModel) {
+                model.globalModel = JSON.parse(result.globalModel);
             }
             if (result.localModels) {
                 model.localModels = result.localModels.map((localModelStr: string) => JSON.parse(localModelStr));
