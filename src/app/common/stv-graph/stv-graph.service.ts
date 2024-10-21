@@ -47,10 +47,7 @@ export class StvGraphService {
 
         this.cy = cytoscape({
             container: graphContainer,
-            elements: {
-                nodes: nodes,
-                edges: edges
-            },
+            elements: [...nodes, ...edges], // Combine nodes and edges into a single array
             style: [
                 {
                     selector: 'node',
@@ -282,4 +279,4 @@ export class StvGraphService {
 function flatDeep(arr:Array<any>, d = 1): Array<any> {
     return d > 0 ? arr.reduce((acc:any, val:any) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
                  : arr.slice();
- };
+};
