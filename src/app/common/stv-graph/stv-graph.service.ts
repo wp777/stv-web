@@ -59,8 +59,8 @@ export class StvGraphService {
                 "text-wrap": "wrap",
                 "text-valign": "center",
                 "text-halign": "right",
-                "font-size": "12px",
-                "color": "#000",
+                // "font-size": "12px",
+                // "color": "#000",
             },
             },
             {
