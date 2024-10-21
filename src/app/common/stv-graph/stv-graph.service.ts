@@ -100,24 +100,24 @@ export class StvGraphService {
             userPanningEnabled: true
         });
 
-        this.cy.nodes().forEach(node => {
-            const ref = node.popperRef();
-            const virtualElement = {
-                getBoundingClientRect: ref.getBoundingClientRect,
-                contextElement: graphContainer
-            };
-            const popperInstance = createPopper(virtualElement, graphContainer);
-            const tooltip = tippy(popperInstance.popper, {
-                content: () => {
-                    const content = document.createElement('div');
-                    content.innerHTML = `ID: ${node.id()}<br>State: ${JSON.stringify(node.data().T)}`;
-                    return content;
-                },
-                trigger: 'manual'
-            });
-            node.on('mouseover', () => tooltip.show());
-            node.on('mouseout', () => tooltip.hide());
-        });
+        // this.cy.nodes().forEach(node => {
+        //     const ref = node.popperRef();
+        //     const virtualElement = {
+        //         getBoundingClientRect: ref.getBoundingClientRect,
+        //         contextElement: graphContainer
+        //     };
+        //     const popperInstance = createPopper(virtualElement, graphContainer);
+        //     const tooltip = tippy(popperInstance.popper, {
+        //         content: () => {
+        //             const content = document.createElement('div');
+        //             content.innerHTML = `ID: ${node.id()}<br>State: ${JSON.stringify(node.data().T)}`;
+        //             return content;
+        //         },
+        //         trigger: 'manual'
+        //     });
+        //     node.on('mouseover', () => tooltip.show());
+        //     node.on('mouseout', () => tooltip.hide());
+        // });
 
         this.computeStateLabelsList([nodes.map(x => Object.keys(x.data.T))]);
     }
