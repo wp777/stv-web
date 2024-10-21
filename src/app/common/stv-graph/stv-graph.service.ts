@@ -104,7 +104,12 @@ export class StvGraphService {
 
         this.cy.nodes().forEach(node => {
             const ref = node.popperRef();
-            const tooltip = tippy(ref, {
+            const virtualElement = {
+                getBoundingClientRect: ref.getBoundingClientRect,
+                get clientWidth() { return ref.getBoundingClientRect().width; },
+                get clientHeight() { return ref.getBoundingClientRect().height; }
+            };
+            const tooltip = tippy(virtualElement, {
                 content: () => {
                     const content = document.createElement('div');
                     content.innerHTML = `ID: ${node.id()}<br>State: ${JSON.stringify(node.data().T)}`;
