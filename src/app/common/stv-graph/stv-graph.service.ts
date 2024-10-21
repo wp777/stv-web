@@ -3,9 +3,7 @@ import * as state from "src/app/state";
 import * as cytoscape from "cytoscape";
 import * as popper from "cytoscape-popper";
 import tippy, { Tippy } from "tippy.js";
-import { WrappedNodeExpr } from "@angular/compiler";
-import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
-import { concat, Observable, of } from "rxjs";
+import { createPopper } from '@popperjs/core';
 
 @Injectable({
   providedIn: 'root'
@@ -106,10 +104,10 @@ export class StvGraphService {
             const ref = node.popperRef();
             const virtualElement = {
                 getBoundingClientRect: ref.getBoundingClientRect,
-                get clientWidth() { return ref.getBoundingClientRect().width; },
-                get clientHeight() { return ref.getBoundingClientRect().height; }
+                contextElement: graphContainer
             };
-            const tooltip = tippy(virtualElement, {
+            const popperInstance = createPopper(virtualElement, graphContainer);
+            const tooltip = tippy(popperInstance.popper, {
                 content: () => {
                     const content = document.createElement('div');
                     content.innerHTML = `ID: ${node.id()}<br>State: ${JSON.stringify(node.data().T)}`;
