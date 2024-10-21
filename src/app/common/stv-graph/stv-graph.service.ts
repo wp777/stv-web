@@ -3,11 +3,11 @@ import * as state from "src/app/state";
 import * as cytoscape from "cytoscape";
 import * as popper from "cytoscape-popper";
 import tippy, { Tippy } from "tippy.js";
-import { createPopper } from '@popperjs/core';
+import { WrappedNodeExpr } from "@angular/compiler";
+import { i18nMetaToJSDoc } from "@angular/compiler/src/render3/view/i18n/meta";
+import { concat, Observable, of } from "rxjs";
 
-@Injectable({
-  providedIn: 'root'
-})
+
 export class StvGraphService {
 
     private cy: cytoscape.Core | null = null;
@@ -18,9 +18,11 @@ export class StvGraphService {
     public actionLabels: Array<any> = []; // list of unique action labels
     private graphLayout: Object = {};
 
+
     constructor() { }
     
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
+        // @todo YK (advanced graph rendering) + (use three consts below while initializing graph or call three methods this.update...() after graph initialization)
         const nodes: cytoscape.ElementDefinition[] = graph.nodes.map(node => ({
             data: {
                 id: `n_${node.id}`,
@@ -43,83 +45,103 @@ export class StvGraphService {
             classes: "withActionLabels " + (link.str ? "str" : ""),
         }));
 
+        this.computeStateLabelsList([nodes.map(x => Object.keys(x.data.T))])
+        this.computeActionLabelsList(edges.map(x => x.data.T))
+
+        // @todo beautify labels
+        const styleArr: cytoscape.Stylesheet[] = [
+            {
+                selector: ".withStateLabels",
+                style: {
+                    label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                    "text-wrap": "wrap",
+                    "text-valign": "center",
+                    "text-halign": "right",
+                },
+            },
+            {
+                selector: ".withActionLabels",
+                style: {
+                    label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                },
+            },
+            {
+                selector: "node",
+                style: {
+                    "background-color": "#36454f",
+                }
+            },
+            {
+                selector: ".bgn",
+                style: {
+                    "background-color": "#26619c",
+                },
+            }, 
+            {
+                selector: ".win",
+                style: {
+                    "background-color": "#4cbb17",
+                },
+            },
+            {
+                selector: "edge",
+                style: {
+                    "width": "3px",
+                    "curve-style": "bezier",
+                    "target-arrow-shape": "triangle",
+                }
+            },
+            {
+                selector: ".str",
+                style: {
+                    "background-color": "red",
+                    "line-color": "red",
+                },
+            },
+        ];
+
+        // console.log(nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id));
+        
+        
+        // @todo YK add cytoscape-node-html-label extention for better label render performance
+        this.graphLayout = { // "cytoscape.LayoutOptions | cytoscape.BaseLayoutOptions" type leads to errors
+            name: 'breadthfirst',
+            fit: true,
+            directed: true,
+            padding: 30, 
+            spacingFactor: 1.75, 
+            nodeDimensionsIncludeLabels: true,
+            // roots: this.cy?.nodes(".bgn").map(x=>x.data("id")), // the roots of the trees
+            roots: nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id),
+            animate: false, 
+        };
+        // @todo add graph loading mask
         this.cy = cytoscape({
             container: graphContainer,
-            elements: [...nodes, ...edges], // Combine nodes and edges into a single array
-            style: [
-                {
-                    selector: 'node',
-                    style: {
-                        'background-color': '#666',
-                        'label': 'data(id)',
-                        'text-valign': 'center',
-                        'color': '#fff',
-                        'font-size': '10px',
-                        'width': '20px',
-                        'height': '20px'
-                    }
-                },
-                {
-                    selector: 'edge',
-                    style: {
-                        'width': 2,
-                        'line-color': '#ccc',
-                        'target-arrow-color': '#ccc',
-                        'target-arrow-shape': 'triangle',
-                        'curve-style': 'bezier',
-                        'label': 'data(id)',
-                        'font-size': '8px',
-                        'color': '#000'
-                    }
-                },
-                {
-                    selector: '.bgn',
-                    style: {
-                        'background-color': '#6FB1FC'
-                    }
-                },
-                {
-                    selector: '.win',
-                    style: {
-                        'background-color': '#86B342'
-                    }
-                },
-                {
-                    selector: '.str',
-                    style: {
-                        'background-color': '#F5A45D'
-                    }
-                }
-            ],
-            layout: {
-                name: 'cose',
-                animate: true,
-                animationDuration: this.zoomAnimationSpeed
-            },
-            userZoomingEnabled: this.userZoomEnabled,
-            userPanningEnabled: true
+            elements: [...nodes, ...edges],
+            zoomingEnabled: this.userZoomEnabled,
+            panningEnabled: true,
+            wheelSensitivity: 0.2,
+            layout: <cytoscape.BaseLayoutOptions> this.graphLayout,
+            style: styleArr,
         });
 
-        // this.cy.nodes().forEach(node => {
-        //     const ref = node.popperRef();
-        //     const virtualElement = {
-        //         getBoundingClientRect: ref.getBoundingClientRect,
-        //         contextElement: graphContainer
-        //     };
-        //     const popperInstance = createPopper(virtualElement, graphContainer);
-        //     const tooltip = tippy(popperInstance.popper, {
-        //         content: () => {
-        //             const content = document.createElement('div');
-        //             content.innerHTML = `ID: ${node.id()}<br>State: ${JSON.stringify(node.data().T)}`;
-        //             return content;
-        //         },
-        //         trigger: 'manual'
-        //     });
-        //     node.on('mouseover', () => tooltip.show());
-        //     node.on('mouseout', () => tooltip.hide());
-        // });
-
-        this.computeStateLabelsList([nodes.map(x => Object.keys(x.data.T))]);
+        // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
+        // console.log(this.cy);
+        this.cy.elements().on('click', (e) =>{
+            let el = e.target;
+            // console.log(e.target);
+            
+            if(el.isNode()){
+                console.log(this.stateLabelsToString(el,true));
+            }else if(el.isEdge()){
+                console.log(this.actionLabelsToString(el,true));
+            }
+        })
     }
 
     private stateLabelsToString(el: cytoscape.EdgeSingular, showAll:boolean = false) {
@@ -282,4 +304,4 @@ export class StvGraphService {
 function flatDeep(arr:Array<any>, d = 1): Array<any> {
     return d > 0 ? arr.reduce((acc:any, val:any) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
                  : arr.slice();
-};
+ };
