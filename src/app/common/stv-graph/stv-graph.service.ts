@@ -51,75 +51,56 @@ export class StvGraphService {
         // @todo beautify labels
         const styleArr: cytoscape.Stylesheet[] = [
             {
-            selector: ".withStateLabels",
-            style: {
-                label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
-                "text-outline-color": "white",
-                "text-outline-width": "1px",
-                "text-wrap": "wrap",
-                "text-valign": "center",
-                "text-halign": "right",
-                // "font-size": "12px",
-                // "color": "#000",
-            },
+                selector: ".withStateLabels",
+                style: {
+                    label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                    "text-wrap": "wrap",
+                    "text-valign": "center",
+                    "text-halign": "right",
+                },
             },
             {
-            selector: ".withActionLabels",
-            style: {
-                label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
-                "text-outline-color": "white",
-                "text-outline-width": "2px",
-                "font-size": "8px",
-                "color": "#000",
-            },
+                selector: ".withActionLabels",
+                style: {
+                    label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                },
             },
             {
-            selector: "node",
-            style: {
-                "background-color": "#6a5acd", // SlateBlue
-                "width": "40px",
-                "height": "40px",
-                "border-color": "#483d8b", // DarkSlateBlue
-                "border-width": "2px",
-                "text-valign": "center",
-                "text-halign": "center",
-                "font-size": "12px",
-                "color": "#fff",
-            }
+                selector: "node",
+                style: {
+                    "background-color": "#36454f",
+                }
             },
             {
-            selector: ".bgn",
-            style: {
-                "background-color": "#1e90ff", // DodgerBlue
-                "border-color": "#1c86ee", // DodgerBlue3
-                "border-width": "2px",
-            },
+                selector: ".bgn",
+                style: {
+                    "background-color": "#26619c",
+                },
             }, 
             {
-            selector: ".win",
-            style: {
-                "background-color": "#32cd32", // LimeGreen
-                "border-color": "#2eb82e", // LimeGreen3
-                "border-width": "2px",
-            },
+                selector: ".win",
+                style: {
+                    "background-color": "#4cbb17",
+                },
             },
             {
-            selector: "edge",
-            style: {
-                "width": "2px",
-                "curve-style": "bezier",
-                "target-arrow-shape": "triangle",
-                "line-color": "#87cefa", // LightSkyBlue
-                "target-arrow-color": "#87cefa", // LightSkyBlue
-            }
+                selector: "edge",
+                style: {
+                    "width": "3px",
+                    "curve-style": "bezier",
+                    "target-arrow-shape": "triangle",
+                }
             },
             {
-            selector: ".str",
-            style: {
-                "background-color": "#ff4500", // OrangeRed
-                "line-color": "#ff4500", // OrangeRed
-                "target-arrow-color": "#ff4500", // OrangeRed
-            },
+                selector: ".str",
+                style: {
+                    "background-color": "red",
+                    "line-color": "red",
+                },
             },
         ];
 
