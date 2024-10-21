@@ -20,7 +20,7 @@ export class StvGraphService {
 
 
     constructor() { }
-    
+
     render(graph: state.models.graph.Graph, graphContainer: HTMLDivElement): void {
         // @todo YK (advanced graph rendering) + (use three consts below while initializing graph or call three methods this.update...() after graph initialization)
         const nodes: cytoscape.ElementDefinition[] = graph.nodes.map(node => ({
@@ -32,8 +32,8 @@ export class StvGraphService {
                 T: node.T,
             },
             classes: "withStateLabels " + (node.bgn ? "bgn" : "") + (node.win ? "win" : "") + (node.str ? "str" : ""),
-        }));        
-         
+        }));
+
         const edges: cytoscape.ElementDefinition[] = graph.links.map(link => ({
             data: {
                 id: `e_${link.id}`,
@@ -51,76 +51,76 @@ export class StvGraphService {
         // @todo beautify labels
         const styleArr: cytoscape.Stylesheet[] = [
             {
-            selector: ".withStateLabels",
-            style: {
-                label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
-                "text-outline-color": "white",
-                "text-outline-width": "1px",
-                "text-wrap": "wrap",
-                "text-valign": "center",
-                "text-halign": "right",
-            },
-            },
-            {
-            selector: ".withActionLabels",
-            style: {
-                label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
-                "text-outline-color": "white",
-                "text-outline-width": "1px",
-            },
+                selector: ".withStateLabels",
+                style: {
+                    label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                    "text-wrap": "wrap",
+                    "text-valign": "center",
+                    "text-halign": "right",
+                },
             },
             {
-            selector: "node",
-            style: {
-                "background-color": "#6a5acd", // SlateBlue
-            }
+                selector: ".withActionLabels",
+                style: {
+                    label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
+                    "text-outline-color": "white",
+                    "text-outline-width": "1px",
+                },
             },
             {
-            selector: ".bgn",
-            style: {
-                "background-color": "#4682b4", // SteelBlue
-            },
-            }, 
-            {
-            selector: ".win",
-            style: {
-                "background-color": "#32cd32", // LimeGreen
-            },
+                selector: "node",
+                style: {
+                    "background-color": "#6a5acd", // SlateBlue
+                }
             },
             {
-            selector: "edge",
-            style: {
-                "width": "3px",
-                "curve-style": "bezier",
-                "line-color": "#708090", // SlateGray
-                "target-arrow-shape": "triangle",
-                "target-arrow-color": "#708090", // SlateGray
-            }
+                selector: ".bgn",
+                style: {
+                    "background-color": "#4682b4", // SteelBlue
+                },
             },
             {
-            selector: ".str",
-            style: {
-                "background-color": "#ff4500", // OrangeRed
-                "line-color": "#ff4500", // OrangeRed
-                "target-arrow-color": "#ff4500", // OrangeRed
+                selector: ".win",
+                style: {
+                    "background-color": "#32cd32", // LimeGreen
+                },
             },
+            {
+                selector: "edge",
+                style: {
+                    "width": "3px",
+                    "curve-style": "bezier",
+                    "line-color": "#708090", // SlateGray
+                    "target-arrow-shape": "triangle",
+                    "target-arrow-color": "#708090", // SlateGray
+                }
+            },
+            {
+                selector: ".str",
+                style: {
+                    "background-color": "#32cd32", // LimeGreen
+                    "line-color": "#32cd32", // LimeGreen
+                    "target-arrow-color": "#32cd32", // LimeGreen
+                },
             },
         ];
 
         // console.log(nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id));
-        
-        
+
+
         // @todo YK add cytoscape-node-html-label extention for better label render performance
         this.graphLayout = { // "cytoscape.LayoutOptions | cytoscape.BaseLayoutOptions" type leads to errors
             name: 'breadthfirst',
             fit: true,
             directed: true,
-            padding: 30, 
-            spacingFactor: 1.75, 
+            padding: 30,
+            spacingFactor: 1.75,
             nodeDimensionsIncludeLabels: true,
             // roots: this.cy?.nodes(".bgn").map(x=>x.data("id")), // the roots of the trees
-            roots: nodes.filter(x=>(x.classes || "").includes("bgn")).map(x=>x.data.id),
-            animate: false, 
+            roots: nodes.filter(x => (x.classes || "").includes("bgn")).map(x => x.data.id),
+            animate: false,
         };
         // @todo add graph loading mask
         this.cy = cytoscape({
@@ -129,53 +129,53 @@ export class StvGraphService {
             zoomingEnabled: this.userZoomEnabled,
             panningEnabled: true,
             wheelSensitivity: 0.2,
-            layout: <cytoscape.BaseLayoutOptions> this.graphLayout,
+            layout: <cytoscape.BaseLayoutOptions>this.graphLayout,
             style: styleArr,
         });
 
         // console.log([this.cy.nodes().map(x=>Object.keys(x.data('T')))].flat());
         // console.log(this.cy);
-        this.cy.elements().on('click', (e) =>{
+        this.cy.elements().on('click', (e) => {
             let el = e.target;
             // console.log(e.target);
-            
-            if(el.isNode()){
-                console.log(this.stateLabelsToString(el,true));
-            }else if(el.isEdge()){
-                console.log(this.actionLabelsToString(el,true));
+
+            if (el.isNode()) {
+                console.log(this.stateLabelsToString(el, true));
+            } else if (el.isEdge()) {
+                console.log(this.actionLabelsToString(el, true));
             }
         })
     }
 
-    private stateLabelsToString(el: cytoscape.EdgeSingular, showAll:boolean = false) {
-        const visible = this.stateLabels.reduce( (acc,x)=>((acc as any)[x.name]=x.display,acc),{});
+    private stateLabelsToString(el: cytoscape.EdgeSingular, showAll: boolean = false) {
+        const visible = this.stateLabels.reduce((acc, x) => ((acc as any)[x.name] = x.display, acc), {});
         let labels = Object.entries(el.data("T"));
-        if(!showAll)labels = labels.filter(x=> visible[x[0]])
+        if (!showAll) labels = labels.filter(x => visible[x[0]])
 
-        return labels.length>0 ? "{"+labels.map(x=>x[0]+":"+JSON.stringify(x[1])).join(',\n ')+"}" : "";
+        return labels.length > 0 ? "{" + labels.map(x => x[0] + ":" + JSON.stringify(x[1])).join(',\n ') + "}" : "";
         // return JSON.stringify(el.data("T")).replace(/\"/g, "").split(',').join(',\n ');
     }
 
-    private actionLabelsToString(el:cytoscape.EdgeSingular, showAll:boolean = false){
-        const visible = this.actionLabels.reduce( (acc,x)=>((acc as any)[x.name]=(showAll ? true:x.display),acc),{});
-        if(!Object.values(visible).some(x=>x==true) || !Array.isArray(el.data("T")))return "";
-        
-        const labels = el.data("T").map((x: string) => visible[x] ? x : "_" );
-        return labels.length>0 ? "("+labels.join(', ')+")" : "";
+    private actionLabelsToString(el: cytoscape.EdgeSingular, showAll: boolean = false) {
+        const visible = this.actionLabels.reduce((acc, x) => ((acc as any)[x.name] = (showAll ? true : x.display), acc), {});
+        if (!Object.values(visible).some(x => x == true) || !Array.isArray(el.data("T"))) return "";
+
+        const labels = el.data("T").map((x: string) => visible[x] ? x : "_");
+        return labels.length > 0 ? "(" + labels.join(', ') + ")" : "";
     }
 
-    private computeStateLabelsList(arr:Array<any>){
-        this.stateLabels = [...new Set(flatDeep(arr,2))]
-        .map(x => ({"name": x, "display": false}));        
+    private computeStateLabelsList(arr: Array<any>) {
+        this.stateLabels = [...new Set(flatDeep(arr, 2))]
+            .map(x => ({ "name": x, "display": false }));
     }
 
-    private computeActionLabelsList(arr:Array<any>){
-        this.actionLabels = [...new Set(flatDeep(arr,2))]
-            .map(x => ({"name": x, "display": false}));
+    private computeActionLabelsList(arr: Array<any>) {
+        this.actionLabels = [...new Set(flatDeep(arr, 2))]
+            .map(x => ({ "name": x, "display": false }));
     }
 
     // @todo YK: re-work fix (make it less ugly)
-    reloadStateLabels(): void{
+    reloadStateLabels(): void {
         this.toggleStateLabels();
         this.toggleStateLabels();
     }
@@ -184,7 +184,7 @@ export class StvGraphService {
         this.cy?.nodes().toggleClass("withStateLabels");
     }
 
-    reloadActionLabels(): void{
+    reloadActionLabels(): void {
         this.toggleActionLabels();
         this.toggleActionLabels();
     }
@@ -246,11 +246,11 @@ export class StvGraphService {
         }
     }
 
-    reloadLayout(){
+    reloadLayout() {
         this.cy?.layout(<cytoscape.BaseLayoutOptions>this.graphLayout).run();
     }
 
-    changeLayout(_name:string, ...args:any){
+    changeLayout(_name: string, ...args: any) {
         switch (_name) {
             case "bfs":
                 this.graphLayout = {
@@ -260,9 +260,9 @@ export class StvGraphService {
                     padding: 30, // padding on fit
                     spacingFactor: 1.75, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
                     nodeDimensionsIncludeLabels: true, // Excludes the label when calculating node bounding boxes for the layout algorithm
-                    roots: this.cy?.nodes(".bgn").map(x=>x.data("id")), // the roots of the trees
+                    roots: this.cy?.nodes(".bgn").map(x => x.data("id")), // the roots of the trees
                     animate: false, // whether to transition the node positions
-                  }
+                }
                 break;
             case "grid":
 
@@ -273,10 +273,10 @@ export class StvGraphService {
                     animate: false,
                     fit: true,
                     padding: 30,
-                    nodeDimensionsIncludeLabels:true
+                    nodeDimensionsIncludeLabels: true
                 }
                 break;
-        
+
             default:
                 break;
         }
@@ -291,20 +291,20 @@ export class StvGraphService {
         this.clearStrategy();
 
         strategyModel.nodes.forEach(node => {
-            if(node.str) {
+            if (node.str) {
                 this.cy?.$id(`n_${node.id}`).addClass("str");
             }
         });
 
         strategyModel.links.forEach(link => {
-            if(link.str) {
+            if (link.str) {
                 this.cy?.$id(`e_${link.id}`).addClass("str");
             }
         });
     }
 
 }
-function flatDeep(arr:Array<any>, d = 1): Array<any> {
-    return d > 0 ? arr.reduce((acc:any, val:any) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
-                 : arr.slice();
- };
+function flatDeep(arr: Array<any>, d = 1): Array<any> {
+    return d > 0 ? arr.reduce((acc: any, val: any) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
+        : arr.slice();
+};
