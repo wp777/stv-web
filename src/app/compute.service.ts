@@ -136,7 +136,7 @@ export class ComputeService {
         }
     }
     
-    async generateOnTheFlyModel(model: state.models.SomeModel): Promise<void> {
+    async generateOnTheFlyModel(model: state.models.File): Promise<void> {
         const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
         const action: Types.actions.OnTheFlyModelGeneration = {
             type: "onTheFlyModelGeneration",
