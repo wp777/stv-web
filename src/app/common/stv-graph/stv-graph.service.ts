@@ -51,56 +51,59 @@ export class StvGraphService {
         // @todo beautify labels
         const styleArr: cytoscape.Stylesheet[] = [
             {
-                selector: ".withStateLabels",
-                style: {
-                    label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
-                    "text-outline-color": "white",
-                    "text-outline-width": "1px",
-                    "text-wrap": "wrap",
-                    "text-valign": "center",
-                    "text-halign": "right",
-                },
+            selector: ".withStateLabels",
+            style: {
+                label: (el: cytoscape.EdgeSingular) => this.stateLabelsToString(el),
+                "text-outline-color": "white",
+                "text-outline-width": "1px",
+                "text-wrap": "wrap",
+                "text-valign": "center",
+                "text-halign": "right",
+            },
             },
             {
-                selector: ".withActionLabels",
-                style: {
-                    label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
-                    "text-outline-color": "white",
-                    "text-outline-width": "1px",
-                },
+            selector: ".withActionLabels",
+            style: {
+                label: (el: cytoscape.EdgeSingular) => this.actionLabelsToString(el),
+                "text-outline-color": "white",
+                "text-outline-width": "1px",
+            },
             },
             {
-                selector: "node",
-                style: {
-                    "background-color": "#36454f",
-                }
+            selector: "node",
+            style: {
+                "background-color": "#6a5acd", // SlateBlue
+            }
             },
             {
-                selector: ".bgn",
-                style: {
-                    "background-color": "#26619c",
-                },
+            selector: ".bgn",
+            style: {
+                "background-color": "#4682b4", // SteelBlue
+            },
             }, 
             {
-                selector: ".win",
-                style: {
-                    "background-color": "#4cbb17",
-                },
+            selector: ".win",
+            style: {
+                "background-color": "#32cd32", // LimeGreen
+            },
             },
             {
-                selector: "edge",
-                style: {
-                    "width": "3px",
-                    "curve-style": "bezier",
-                    "target-arrow-shape": "triangle",
-                }
+            selector: "edge",
+            style: {
+                "width": "3px",
+                "curve-style": "bezier",
+                "line-color": "#708090", // SlateGray
+                "target-arrow-shape": "triangle",
+                "target-arrow-color": "#708090", // SlateGray
+            }
             },
             {
-                selector: ".str",
-                style: {
-                    "background-color": "red",
-                    "line-color": "red",
-                },
+            selector: ".str",
+            style: {
+                "background-color": "#ff4500", // OrangeRed
+                "line-color": "#ff4500", // OrangeRed
+                "target-arrow-color": "#ff4500", // OrangeRed
+            },
             },
         ];
 
