@@ -8,6 +8,7 @@ import { Subscription, interval } from "rxjs";
 import { debounce } from "rxjs/operators";
 import { ApproximationModals } from "src/app/modals/ApproximationModals";
 import { DominoDfsModals } from "src/app/modals/DominoDfsModals";
+import { NaturalStrategyModals } from "src/app/modals/NaturalStrategyModals";
 
 @Component({
     selector: "stv-verification-sidebar",
@@ -109,10 +110,20 @@ export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     async onDominoDfsClick(): Promise<void> {
         await this.verifyModelUsingDominoDfs(false);
     }
+
+    async onNaturalStrategyClick(): Promise<void> {
+        await this.verifyModelUsingNaturalStrategy();
+    }
     
     async verifyModelUsingDominoDfs(reduced: boolean): Promise<void> {
         const result = await this.computeService.verifyModelUsingDominoDfs(this.getVerificationModel(), reduced, this.dominoDfsHeuristic);
         DominoDfsModals.showForResult(result);
+        this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
+    }
+
+    async verifyModelUsingNaturalStrategy(): Promise<void> {
+        const result = await this.computeService.verifyModelUsingNaturalStrategy(this.getVerificationModel());
+        NaturalStrategyModals.showForResult(result);
         this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
     }
     

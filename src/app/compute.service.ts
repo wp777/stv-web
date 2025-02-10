@@ -20,6 +20,8 @@ type RawApproximationResult = ["0" | "1", number, string];
 
 type RawDominoDfsResult = ["0" | "1", string];
 
+type RawNaturalStrategyResult = ["0" | "1", string, string];
+
 interface RawBisimulationCheckingResult {
     bisimulation_result: boolean;
     coalition: string[];
@@ -65,6 +67,14 @@ export interface DominoDfsResult {
 export interface BisimulationCheckingResult {
     modelsAreABisimilar: boolean;
     coalition: string[];
+}
+
+export interface NaturalStrategyResult {
+    strategyFound: boolean;
+    strategy: string;
+    strategyObjectiveString: string;
+    strategyObjectiveModel: state.models.graph.Graph;
+    naturalStrategy: string;
 }
 
 @Injectable({
@@ -296,6 +306,22 @@ export class ComputeService {
         };
         const rawResult = await this.requestCompute<Types.actions.DominoDfs, RawDominoDfsResult>(action);
         return this.convertRawResultToDominoDfsResult(rawResult);
+    }
+
+    async verifyModelUsingNaturalStrategy(model: state.models.SomeModel): Promise<NaturalStrategyResult> {
+        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+        const action: Types.actions.NaturalStrategy = {
+            type: "naturalStrategy",
+            modelParameters: modelParameters,
+        };
+        const rawResult = await this.requestCompute<Types.actions.NaturalStrategy, RawNaturalStrategyResult>(action);
+        return {
+            strategyFound: rawResult[0] === "1",
+            strategy: rawResult[1],
+            strategyObjectiveString: rawResult[1],
+            strategyObjectiveModel: JSON.parse(rawResult[1]),
+            naturalStrategy: rawResult[2],
+        };
     }
     
     async checkBisimulation(model1: state.models.File, model2: state.models.File, specificationModel: state.models.parameters.File): Promise<BisimulationCheckingResult> {
