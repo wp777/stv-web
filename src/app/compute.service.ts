@@ -308,8 +308,8 @@ export class ComputeService {
         return this.convertRawResultToDominoDfsResult(rawResult);
     }
 
-    async verifyModelUsingNaturalStrategy(model: state.models.SomeModel): Promise<NaturalStrategyResult> {
-        const modelParameters: Types.models.parameters.SomeParameters = model.parameters.getPlainModelParameters();
+    async verifyModelUsingNaturalStrategy(model: state.models.File): Promise<NaturalStrategyResult> {
+        const modelParameters: Types.models.parameters.File = model.parameters.getPlainModelParameters();
         const action: Types.actions.NaturalStrategy = {
             type: "naturalStrategy",
             modelParameters: modelParameters,
@@ -320,7 +320,7 @@ export class ComputeService {
             strategy: rawResult[1],
             strategyObjectiveString: rawResult[1],
             strategyObjectiveModel: JSON.parse(rawResult[1]),
-            naturalStrategy: rawResult[2],
+            naturalStrategy: rawResult[1],
         };
     }
     
