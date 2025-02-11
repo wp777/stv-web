@@ -7,13 +7,14 @@ export class NaturalStrategyModal extends Modal {
             "Verification result",
             `
                 <div class="main-message">
-                    Result strategy <strong>${strategyFound ? "found" : "not found"}</strong>.
+                    Result: strategy <strong>${strategyFound ? "found" : "not found"}</strong>.
                 </div>
 
                 <div>
                     ${strategyFound ? `
                         <div>
-                            <strong>Strategy:</strong>
+                            <strong>Natural strategy:</strong>
+                            <br>
                             <pre>${strategy}</pre>
                         </div>
                     ` : ""}
