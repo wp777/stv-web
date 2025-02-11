@@ -328,7 +328,7 @@ export class ComputeService {
         return rawNaturalStrategy
             .replace(/^\[|\]$/g, '')  // Remove square brackets from the beginning and end
             .replace(/'/g, '')        // Remove single quotes
-            .replace(/,/g, '\n');     // Replace commas with new lines
+            .replace(/, /g, '\n');     // Replace commas with new lines
     }
     
     async checkBisimulation(model1: state.models.File, model2: state.models.File, specificationModel: state.models.parameters.File): Promise<BisimulationCheckingResult> {
