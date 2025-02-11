@@ -2,7 +2,7 @@ import { Modal } from "./Modal";
 
 export class NaturalStrategyModal extends Modal {
     
-    constructor(strategyFound: boolean, strategy: strin, complexity: string) {
+    constructor(strategyFound: boolean, strategy: string, complexity: string) {
         super(
             "Verification result",
             `
