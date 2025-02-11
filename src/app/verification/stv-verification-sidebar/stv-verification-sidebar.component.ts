@@ -122,7 +122,7 @@ export class StvVerificationSidebarComponent implements OnInit, OnDestroy {
     }
 
     async verifyModelUsingNaturalStrategy(): Promise<void> {
-        const result = await this.computeService.verifyModelUsingNaturalStrategy(this.getVerificationModel());
+        const result = await this.computeService.verifyModelUsingNaturalStrategy(this.getVerificationState().model as state.models.File);
         NaturalStrategyModals.showForResult(result);
         this.appState.currentGraphService?.showStrategy(result.strategyObjectiveModel);
     }
