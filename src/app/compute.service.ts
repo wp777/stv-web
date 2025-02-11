@@ -20,7 +20,7 @@ type RawApproximationResult = ["0" | "1", number, string];
 
 type RawDominoDfsResult = ["0" | "1", string];
 
-type RawNaturalStrategyResult = ["0" | "1", string, string];
+type RawNaturalStrategyResult = ["0" | "1", string, string, string];
 
 interface RawBisimulationCheckingResult {
     bisimulation_result: boolean;
@@ -75,6 +75,7 @@ export interface NaturalStrategyResult {
     strategyObjectiveString: string;
     strategyObjectiveModel: state.models.graph.Graph;
     naturalStrategy: string;
+    complexity: string;
 }
 
 @Injectable({
@@ -321,6 +322,7 @@ export class ComputeService {
             strategyObjectiveString: rawResult[1],
             strategyObjectiveModel: JSON.parse(rawResult[1]),
             naturalStrategy: this.convertRawNaturalStrategyToReadableString(rawResult[2]),
+            complexity: rawResult[3],
         };
     }
 
