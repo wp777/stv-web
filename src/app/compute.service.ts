@@ -320,7 +320,7 @@ export class ComputeService {
             strategy: rawResult[1],
             strategyObjectiveString: rawResult[1],
             strategyObjectiveModel: JSON.parse(rawResult[1]),
-            naturalStrategy: rawResult[1],
+            naturalStrategy: rawResult[2],
         };
     }
     
