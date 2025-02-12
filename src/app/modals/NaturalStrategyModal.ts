@@ -15,7 +15,7 @@ export class NaturalStrategyModal extends Modal {
                         <div>
                             <strong>Natural strategy:</strong>
                             <br>
-                            <pre>${strategy}</pre>
+                            <pre style="max-height: 80vh; overflow: scroll;">${strategy}</pre>
                             <br>
                             <strong>Complexity: ${complexity}</strong> 
                         </div>
